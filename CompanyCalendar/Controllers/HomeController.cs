@@ -21,6 +21,8 @@ namespace CompanyCalendar.Controllers
             {
                 int cookieUserID = Convert.ToInt32(getCookie["UserID"]);
                 var details = gdc.Users.Where(u => u.UserID == cookieUserID).FirstOrDefault();
+                ViewBag.uname = getCookie["email"].ToString();
+                ViewBag.uid = getCookie["UserID"].ToString();
 
                 if (details != null)
                 {
@@ -61,6 +63,8 @@ namespace CompanyCalendar.Controllers
             {
                 int cookieUserID = Convert.ToInt32(getCookie["UserID"]);
                 var details = gdc.Users.Where(u => u.UserID == cookieUserID).FirstOrDefault();
+                ViewBag.uname = getCookie["email"].ToString();
+                ViewBag.uid = getCookie["UserID"].ToString();
 
                 if (details != null)
                 {
@@ -232,7 +236,7 @@ namespace CompanyCalendar.Controllers
             e.End = vm.End;
             e.Description = vm.Description;
             e.IsFullDay = vm.IsFullDay;
-            e.ThemeColor = vm.ThemeColor;
+            //e.ThemeColor = vm.ThemeColor;
             e.CreatedOn = DateTime.UtcNow.Date;
             e.EventType = vm.EventType;
             e.EventLocation = vm.EventLocation;
@@ -271,11 +275,15 @@ namespace CompanyCalendar.Controllers
 
                         if (e.EventType == "Leave")
                         {
-                            v.ThemeColor = "#ff99ff";
+                            v.ThemeColor = "#ffe6f7";
                         }
                         else if (e.EventType == "Personal")
                         {
-                            v.ThemeColor = "#99b3ff";
+                            v.ThemeColor = "#ffebe6";
+                        }
+                        else if (e.EventType == "Meeting")
+                        {
+                            v.ThemeColor = "#e6e6ff";
                         }
                         else
                         {
@@ -306,6 +314,7 @@ namespace CompanyCalendar.Controllers
                     if (e.EventType == "Meeting")
                     {
                         e.CreatedBy = cookieUserID;
+                        e.ThemeColor = "#e6e6ff";
                         e.CreatedOn = DateTime.UtcNow.Date;
                         dc.Events.Add(e);
                     }
@@ -315,7 +324,7 @@ namespace CompanyCalendar.Controllers
                         e.Subject = "On Leave";
                         e.CreatedOn = DateTime.UtcNow.Date;
                         e.EventLocation = null;
-                        e.ThemeColor = " #ff99ff";
+                        e.ThemeColor = "#ffe6f7";
                         dc.Events.Add(e);
                     }
                     else if (e.EventType == "Personal")
@@ -323,7 +332,7 @@ namespace CompanyCalendar.Controllers
                         e.CreatedBy = cookieUserID;
                         e.CreatedOn = DateTime.UtcNow.Date;
                         e.EventLocation = null;
-                        e.ThemeColor = "#99b3ff";
+                        e.ThemeColor = "#ffe6e6";
                         dc.Events.Add(e);
                     }
                     else

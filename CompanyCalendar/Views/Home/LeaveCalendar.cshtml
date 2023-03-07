@@ -4,6 +4,8 @@
 @{
     ViewBag.Title = "Leave Calendar";
 }
+
+
 <div id="calender"></div>
 
 <div id="myModal" class="modal fade" role="dialog">
@@ -15,11 +17,11 @@
             </div>
             <div class="modal-body">
                 @*<button id="btnDelete" class="btn btn-default btn-sm pull-right">
-                        <span class="glyphicon glyphicon-remove"></span> Remove
-                    </button>
-                    <button id="btnEdit" class="btn btn-default btn-sm pull-right" style="margin-right:5px; overflow:auto;">
-                        <span class="glyphicon glyphicon-pencil"></span> Edit
-                    </button>*@
+                    <span class="glyphicon glyphicon-remove"></span> Remove
+                </button>
+                <button id="btnEdit" class="btn btn-default btn-sm pull-right" style="margin-right:5px; overflow:auto;">
+                    <span class="glyphicon glyphicon-pencil"></span> Edit
+                </button>*@
                 <p id="pDetails"></p>
                 <hr />
                 <p id="pPart"></p>
@@ -49,25 +51,37 @@
     <div class="modal-dialog">
         <div class="modal-content col-lg-12">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Save Event</h4>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="col-lg-9">
+                            <h4 class="modal-title">Save Event</h4>
+                        </div>
+                        <div class="col-lg-1 float-left">
+                            <button type="button" id="btnSave" class="btn btn-success">Save</button>
+
+                        </div>
+                        <div class="col-lg-1"></div>
+                        <div class="col-lg-1 float-left">
+                            <button type="button" class="btn btn-default" data-dismiss="modal" style="float:right"><span class="glyphicon glyphicon-remove"></span></button>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="modal-body">
                 <form method="post">
                     <div class="">
                         <input type="hidden" id="hdEventID" value="0" />
 
-                        <div class="form-group" id="hideEventType">
+                        <div class="form-group">
                             <label>Event Type</label>
-                            <select id="ddlEventType" disabled="disabled" class="form-control">
-                                <option value="Meeting" selected="selected">Meeting</option>
-                                <option value="Leave" disabled="disabled">Leave</option>
-                                <option value="Personal" disabled="disabled">Personal</option>
-                                <option value="Training" disabled="disabled">Training</option>
+                            <select id="ddlEventType" class="form-control">
+                                <option value="Meeting">Meeting</option>
+                                <option value="Leave">Leave</option>
+                                <option value="Personal">Personal</option>
                             </select>
                         </div>
 
-                        <div class="row">
+                        <div class="row" id="subjectdiv">
                             <div class="col-lg-12">
                                 <div class="form-group">
                                     <label>Subject</label>
@@ -75,7 +89,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="row">
                             <div class="col-lg-12">
                                 <div class="col-lg-4" style="padding-left:0">
@@ -89,7 +102,6 @@
                                         </div>
                                     </div>
                                 </div>
-
                                 <div class="col-lg-4" style="padding-right:0">
                                     <div class="form-group">
                                         <div id="divEndDate" style="display:none">
@@ -105,11 +117,11 @@
                                 </div>
 
 
-                                <div class="col-lg-4" style="padding-right:0">
+                                <div class="col-lg-4" style="padding-right:0" id="isfulldaydiv">
                                     <div class="form-group">
                                         <label style="visibility:hidden">.</label>
                                         <div class="checkbox">
-                                            <label><input type="checkbox" id="chkIsFullDay" checked="checked" /> <strong class="text-danger">Full Day</strong></label>
+                                            <label><input type="checkbox" id="chkIsFullDay" checked="checked" /> <strong>Full Day</strong></label>
                                         </div>
                                     </div>
                                 </div>
@@ -122,7 +134,7 @@
                                <textarea id="txtDescription" rows="3" class="form-control"></textarea>
                             </div>*@
 
-                        <div class="row">
+                        <div class="row" id="partydiv">
                             <div class="col-lg-12">
                                 <div class="row">
                                     <div class="col-lg-12">
@@ -159,10 +171,10 @@
                             </div>
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group" id="locdiv">
                             <div div class="col-lg-12" style="padding-left:0">
                                 <div div class="col-lg-6" style="padding-left:0">
-                                    <label>Location</label>
+                                    <label>Meeting Location</label>
                                     <select id="ddEventLoc" class="form-control">
                                         <option value="TL1_BR1" selected="selected">TL1 Board Room 1</option>
                                         <option value="TL1_BR2">TL1 Board Room 2</option>
@@ -174,32 +186,19 @@
 
                                 </div>
 
-                                <div class="col-lg-6" style="padding-left:0">
+                                <div class="col-lg-6" style="padding-left:0" id="colordiv">
                                     <label>Priority</label>
                                     <select id="ddThemeColor" class="form-control">
                                         <option value="#ff9999" selected="selected">High</option>
                                         <option value="#ffff66">Medium</option>
-                                        <option value="#85e085">Low</option>
+                                        <option value="#e6e6ff">Low</option>
                                     </select>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="col-lg-12">
-                            <hr />
-                        </div>
-
                         <div class="row">
-                            <div class="col-lg-12">
-                                <div class="col-lg-6">
-                                    <button type="button" id="btnSave" class="btn btn-success">Save</button>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="row">
-                                        <button type="button" class="btn btn-default" data-dismiss="modal" style="float:right"><span class="glyphicon glyphicon-remove"></span></button>
-                                    </div>
-                                </div>
-                            </div>
+                            <hr />
                         </div>
 
                     </div>
@@ -215,12 +214,12 @@
 
 <link href="~/Content/fullcalendar_v_3.4.0/fullcalendar.min.css" rel="stylesheet" />
 <link href="~/Content/fullcalendar_v_3.4.0/fullcalendar.print.css" rel="stylesheet" media="print" />
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+<link href="~/Content/bootstrap-datetimepicker_4.17.47/bootstrap-datetimepicker.min.css" rel="stylesheet" />
 
 @section Scripts{
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+    <script src="~/Content/lib/moment.js_2.18.1/moment.min.js"></script>
     <script src="~/Content/fullcalendar_v_3.4.0/fullcalendar.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
+    <script type="text/javascript" src="~/Content/bootstrap-datetimepicker_4.17.47/bootstrap-datetimepicker.min.js"></script>
 
     <script>
         $(document).ready(function () {
@@ -240,22 +239,17 @@
                                 title: v.Subject,
                                 subject: v.Title,
                                 description: v.Description,
-
                                 color: v.ThemeColor,
-
                                 allDay: v.IsFullDay == true ? true : false,
-                                //start: moment(v.Start),
                                 start: moment(v.Start),
-
                                 end: v.End != null ? moment(v.End) : new Date(),
                                 createdBy: v.createdBy,
                                 createdOn: '',//v.createdOn,
-                                username: v.username,
-                                pName: v.pName,
-                                empid: v.empid,
-                                pempid: v.pempid,
-                                designation: v.designation,
-                                department: v.department,
+                                userid: v.UserID,
+                                username: v.Username,
+                                empid: v.EmpID,
+                                designation: v.Designation,
+                                department: v.Department,
                                 participant: v.Participant,
                                 eventloc: v.EventLocation,
                                 isEmpty: false,
@@ -270,7 +264,6 @@
                     }
                 })
             }
-
             function GenerateCalender(events) {
                 $('#calender').fullCalendar('destroy');
                 $('#calender').fullCalendar({
@@ -288,13 +281,13 @@
 
                     eventLimit: 5,
 
-                    eventColor: '#378006',
+                    eventColor: '#e6e6ff',
+
+                    events: events,
 
                     eventTextColor: 'black',
 
-                    eventBorderColor: 'black',
-
-                    events: events,
+                    //eventBorderColor: 'black',
 
                     displayEventEnd: false,
 
@@ -309,18 +302,20 @@
                         var $description = $('<div/>');
                         var $parts = $('<div/>');
                         var $creator = $('<div/>');
+                        var $uid = $('<div/>');
                         $description.append($('<p/>').html('<b>Event Type: </b>' + calEvent.ett));
-                        //$description.append($('<p/>').html('<b>Created By: </b>' + calEvent.subject));
+
+
                         if (calEvent.allDay) {
 
                             $description.append($('<p/>').html('<b>Duration: All Day.</b> '));
                         }
                         else {
-                            $description.append($('<p/>').html('<b>Start:</b> ' + calEvent.start.format("DD-MMM-YYYY HH:mm a")));
+                            $description.append($('<p/>').html('<b>Start:</b> ' + calEvent.start.format("DD-MMMM-YYYY hh:mm a")));
                         }
 
                         if (calEvent.end != null) {
-                            $description.append($('<p/>').html('<b>End:</b> ' + calEvent.end.format("DD-MMM-YYYY HH:mm a")));
+                            $description.append($('<p/>').html('<b>End:</b> ' + calEvent.end.format("DD-MMMM-YYYY hh:mm a")));
                         }
 
                         $description.append($('<p/>').html('<b>Location:</b> ' + calEvent.eventloc));
@@ -331,12 +326,28 @@
                         $parts.append($('<p/>').html('<b>Paticipant(s):</b><br />' + calEvent.participant));
                         $('#myModal #pPart').empty().html($parts);
 
-                        //Modal Body (Participant)
+                        //Modal Body (Creator)
                         $creator.append($('<p/>').html('<b>Creator: </b>' + calEvent.subject));
                         $('#myModal #pCreator').empty().html($creator);
 
 
+
+                        @*if (calEvent.userid == @ViewBag.uid) {
+
+                            document.getElementById("btnDelete").style.display = '';
+                            document.getElementById("btnEdit").style.display = '';
+
+                        }
+                        else {
+
+                            document.getElementById("btnDelete").style.display = 'none';
+                            document.getElementById("btnEdit").style.display = 'none';
+                        }*@
+
+
                         $('#myModal').modal();
+
+
                     },
 
                     eventRender: function (eventObj, $el) {
@@ -353,17 +364,19 @@
                         });
                     },
 
-                    //selectable: true,
+                    selectable: false,
+
 
                     select: function (start, end) {
+
                         selectedEvent = {
                             eventID: 0,
                             title: '',
                             description: '',
-                            start: start,
+                            start:start,
                             end: end,
                             eventTextColor: 'black',
-                            eventBorderColor: 'black',
+                            //eventBorderColor: 'black',
                             allDay: false,
                             color: '#85e085',
                             eventloc: 'TL1_BR1',
@@ -394,6 +407,8 @@
 
 
             $('#btnEdit').click(function () {
+
+
                 var checkedall = [];
                 $.ajax({
                     type: "POST",
@@ -414,6 +429,7 @@
                 let confirmAction = confirm("Are you sure Edit this event?");
                 if (confirmAction) {
                     checkedall.forEach(check_uncheck_checkbox);
+
                     openAddEditForm();
                 }
                 else {
@@ -440,9 +456,7 @@
                                 FetchEventAndRenderCalendar();
                                 $('#myModal').modal('hide'),
                                     window.location.reload();
-
                             }
-
                         }
                     },
                     error: function () {
@@ -452,9 +466,7 @@
                 // }
             })
 
-            $('#dtp1,#dtp2').datetimepicker({
-                format: 'DD/MM/YYYY HH:mm A'
-            });
+
 
             $('#chkIsFullDay').change(function () {
                 if ($(this).is(':checked')) {
@@ -465,17 +477,61 @@
                 }
             });
 
+            $('#ddlEventType').change(function () {
+                var selectedValue = $("#ddlEventType option:selected").text();
+                if (selectedValue == "Leave" || selectedValue == "Personal") {
+                    document.getElementById("partydiv").style.display = 'none';
+                    document.getElementById("locdiv").style.display = 'none';
+                    //document.getElementById("colordiv").style.display = 'none';
+                    document.getElementById("isfulldaydiv").style.display = 'none';
+
+                    if (selectedValue == "Leave")
+                        document.getElementById("subjectdiv").style.display = 'none';
+                    else
+                        document.getElementById("subjectdiv").style.display = '';
+                }
+                else {
+                    document.getElementById("partydiv").style.display = '';
+                    document.getElementById("locdiv").style.display = '';
+                    //document.getElementById("colordiv").style.display = 'none';
+                    document.getElementById("isfulldaydiv").style.display = '';
+                    document.getElementById("subjectdiv").style.display = '';
+                }
+            });
+
             function openAddEditForm() {
+
+                $('#ddlEventType').val(function () {
+                var selectedValue = $("#ddlEventType option:selected").text();
+                if (selectedValue == "Leave" || selectedValue == "Personal") {
+                    document.getElementById("partydiv").style.display = 'none';
+                    document.getElementById("locdiv").style.display = 'none';
+                    //document.getElementById("colordiv").style.display = 'none';
+                    document.getElementById("isfulldaydiv").style.display = 'none';
+
+                    if (selectedValue == "Leave")
+                    document.getElementById("subjectdiv").style.display = 'none';
+                }
+                else {
+                    document.getElementById("partydiv").style.display = '';
+                    document.getElementById("locdiv").style.display = '';
+                    //document.getElementById("colordiv").style.display = 'none';
+                    document.getElementById("isfulldaydiv").style.display = '';
+                    document.getElementById("subjectdiv").style.display = '';
+                    }
+                    });
+
                 if (selectedEvent != null & selectedEvent.isEmpty) {
                     $('#hdEventID').val(selectedEvent.eventID);
                     $('#txtSubject').val(selectedEvent.title);
-                    $('#txtStart').val(selectedEvent.start.format('DD/MM/YYYY HH:mm A'));
+                    $('#txtStart').val(selectedEvent.start.format('DD/MM/YYYY hh:mm a'));
                     $('#chkIsFullDay').prop("checked", selectedEvent.IsFullDay || false);
                     $('#chkIsFullDay').change();
-                    $('#txtEnd').val(selectedEvent.end != null ? selectedEvent.end.format('DD/MM/YYYY HH:mm A') : '');
+                    $('#txtEnd').val(selectedEvent.end != null ? selectedEvent.end.format('DD/MM/YYYY hh:mm a') : '');
                     $('#txtDescription').val(selectedEvent.description);
                     $('#ddThemeColor').val(selectedEvent.color);
                     $('#ddEventLoc').val(selectedEvent.eventloc);
+                    $('#ddlEventType').val(selectedEvent.ett);
 
                     $('input[name="selectedMembers"]').each(function () {
                         this.checked = false;
@@ -485,22 +541,42 @@
                 else if (selectedEvent != null) {
                     $('#hdEventID').val(selectedEvent.eventID);
                     $('#txtSubject').val(selectedEvent.title);
-                    $('#txtStart').val(selectedEvent.start.format('DD/MM/YYYY HH:mm A'));
+                    $('#txtStart').val(selectedEvent.start.format('DD/MM/YYYY hh:mm a'));
                     $('#chkIsFullDay').prop("checked", selectedEvent.IsFullDay || false);
                     $('#chkIsFullDay').change();
-                    $('#txtEnd').val(selectedEvent.end != null ? selectedEvent.end.format('DD/MM/YYYY HH:mm A') : '');
+                    $('#txtEnd').val(selectedEvent.end != null ? selectedEvent.end.format('DD/MM/YYYY hh:mm a') : '');
                     $('#txtDescription').val(selectedEvent.description);
                     $('#ddThemeColor').val(selectedEvent.color);
                     $('#ddEventLoc').val(selectedEvent.loc);
+                    $('#ddlEventType').val(selectedEvent.ett);
 
                 }
+
+                var selectedValue = $("#ddlEventType option:selected").text();
+                if (selectedValue == "Leave" || selectedValue == "Personal") {
+                    document.getElementById("partydiv").style.display = 'none';
+                    document.getElementById("locdiv").style.display = 'none';
+                    //document.getElementById("colordiv").style.display = 'none';
+                    document.getElementById("isfulldaydiv").style.display = 'none';
+
+                    if (selectedValue == "Leave")
+                    document.getElementById("subjectdiv").style.display = 'none';
+                }
+                else {
+                    document.getElementById("partydiv").style.display = '';
+                    document.getElementById("locdiv").style.display = '';
+                    //document.getElementById("colordiv").style.display = 'none';
+                    document.getElementById("isfulldaydiv").style.display = '';
+                    document.getElementById("subjectdiv").style.display = '';
+                }
+
                 $('#myModal').modal('hide');
                 $('#myModalSave').modal();
             }
 
             $('#btnSave').click(function () {
                 //Validation/
-                if ($('#txtSubject').val().trim() == "") {
+                if ($('#txtSubject').val().trim() == "" && ($("#ddlEventType option:selected").text() == "Meeting" || $("#ddlEventType option:selected").text() == "Personal")) {
                     alert('Subject required');
                     return;
                 }
@@ -514,43 +590,43 @@
                     return;
                 }
                 else {
-                    var startDate = moment($('#txtStart').val(), "DD/MM/YYYY HH:mm A").toDate();
-                    var endDate = moment($('#txtEnd').val(), "DD/MM/YYYY HH:mm A").toDate();
+                    var startDate = moment($('#txtStart').val(), "DD/MM/YYYY hh:mm a").toDate();
+                    var endDate = moment($('#txtEnd').val(), "DD/MM/YYYY hh:mm a").toDate();
                     if (startDate > endDate) {
                         alert('Invalid end date');
                         return;
                     }
                 }
+
                 var selectedValues = [];
                 $('#members input:checked').each(function () {
                     selectedValues.push($(this).val());
                 });
+
                 var data = {
                     EventID: $('#hdEventID').val(),
                     Subject: $('#txtSubject').val().trim(),
                     Start: $('#txtStart').val().trim(),
-                    //End: $('#txtEnd').val().trim(),
                     End: $('#chkIsFullDay').is(':checked') ? null : $('#txtEnd').val().trim(),
                     Description: $('#txtDescription').val(),
                     ThemeColor: $('#ddThemeColor').val(),
                     IsFullDay: $('#chkIsFullDay').is(':checked'),
-                    EventLocation: $('#ddEventLoc').val()
+                    EventLocation: $('#ddEventLoc').val(),
+                    EventType: $('#ddlEventType').val(),
+                    selectedValues: selectedValues
                 }
-                SaveEvent(data, selectedValues, data.EventID);
-
+                SaveEvent(data);
 
             })
             // call function for submit data to the server
-            function SaveEvent(data, selectedValues, event) {
+            function SaveEvent(data) {
                 $.ajax({
                     type: "POST",
                     url: '/home/SaveEvent',
-                    //data: { data: data, values: selectedValues.join(",")},
                     data: data,
                     success: function (data) {
                         if (data.status) {
                             //Refresh the calender
-                            SaveMember(selectedValues, event);
                             FetchEventAndRenderCalendar();
                             $('#myModalSave').modal('hide');
                             window.location.reload();
@@ -562,27 +638,9 @@
                     }
                 })
             }
-            ////////////
-            function SaveMember(selectedValues, eventId) {
-                $.ajax({
-                    type: "POST",
-                    url: '/home/SaveMembers',
-                    data: { values: selectedValues.join(","), eventsId: eventId }
-
-                })
-            }
 
         }
         )
-
-
-        //llllll
-        //jQuery("#myInput").on("keyup", function () {
-        //    var value = $(this).val().toLowerCase();
-        //    jQuery("#members *").filter(function () {
-        //        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-        //    });
-        //});
 
         $(function () {
             $('#myInput').on('keyup', function () {
@@ -598,8 +656,13 @@
             });
         });
 
+        $('#dtp1,#dtp2').datetimepicker({
+                format: 'DD/MM/YYYY hh:mm a'
+        });
+
         window.onload = function () {
-            document.getElementById("hideEventType").style.display = 'none';
+            //document.getElementById("hideEventType").style.display = 'none';
+            document.getElementById("colordiv").style.display = 'none';
         }
     </script>
 

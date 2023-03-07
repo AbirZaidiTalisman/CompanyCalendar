@@ -192,6 +192,7 @@
     <Content Include="Content\Login_v1\images\img-01.PNG" />
     <Content Include="Content\Login_v1\images\img-01o.png" />
     <Content Include="Content\Login_v1\images\img-02.PNG" />
+    <Content Include="Content\Login_v1\images\logo3-removebg-preview.png" />
     <Content Include="Content\Login_v1\images\milky-way.jpg" />
     <Content Include="Content\Login_v1\index.html" />
     <Content Include="Content\Login_v1\js\main.js" />

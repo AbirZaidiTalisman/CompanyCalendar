@@ -121,7 +121,7 @@
                                     <div class="form-group">
                                         <label style="visibility:hidden">.</label>
                                         <div class="checkbox">
-                                            <label><input type="checkbox" id="chkIsFullDay" checked="checked" /> <strong class="text-danger">Full Day</strong></label>
+                                            <label><input type="checkbox" id="chkIsFullDay" checked="checked" /> <strong>Full Day</strong></label>
                                         </div>
                                     </div>
                                 </div>
@@ -174,7 +174,7 @@
                         <div class="form-group" id="locdiv">
                             <div div class="col-lg-12" style="padding-left:0">
                                 <div div class="col-lg-6" style="padding-left:0">
-                                    <label>Location</label>
+                                    <label>Meeting Location</label>
                                     <select id="ddEventLoc" class="form-control">
                                         <option value="TL1_BR1" selected="selected">TL1 Board Room 1</option>
                                         <option value="TL1_BR2">TL1 Board Room 2</option>
@@ -191,7 +191,7 @@
                                     <select id="ddThemeColor" class="form-control">
                                         <option value="#ff9999" selected="selected">High</option>
                                         <option value="#ffff66">Medium</option>
-                                        <option value="#85e085">Low</option>
+                                        <option value="#e6e6ff">Low</option>
                                     </select>
                                 </div>
                             </div>
@@ -281,13 +281,13 @@
 
                     eventLimit: 5,
 
-                    eventColor: '#378006',
+                    eventColor: '#e6e6ff',
 
                     events: events,
 
                     eventTextColor: 'black',
 
-                    eventBorderColor: 'black', 
+                    //eventBorderColor: 'black', 
 
                     displayEventEnd: false,
 
@@ -311,11 +311,11 @@
                             $description.append($('<p/>').html('<b>Duration: All Day.</b> '));
                         }
                         else {
-                            $description.append($('<p/>').html('<b>Start:</b> ' + calEvent.start.format("DD/MMM/YYYY hh:mm a")));
+                            $description.append($('<p/>').html('<b>Start:</b> ' + calEvent.start.format("DD-MMMM-YYYY hh:mm a")));
                         }
 
                         if (calEvent.end != null) {
-                            $description.append($('<p/>').html('<b>End:</b> ' + calEvent.end.format("DD/MMM/YYYY hh:mm a")));
+                            $description.append($('<p/>').html('<b>End:</b> ' + calEvent.end.format("DD-MMMM-YYYY hh:mm a")));
                         }
 
                         $description.append($('<p/>').html('<b>Location:</b> ' + calEvent.eventloc));
@@ -376,7 +376,7 @@
                             start:start,
                             end: end,
                             eventTextColor: 'black',
-                            eventBorderColor: 'black', 
+                            //eventBorderColor: 'black', 
                             allDay: false,
                             color: '#85e085',
                             eventloc: 'TL1_BR1',
@@ -482,7 +482,7 @@
                 if (selectedValue == "Leave" || selectedValue == "Personal") {
                     document.getElementById("partydiv").style.display = 'none';
                     document.getElementById("locdiv").style.display = 'none';
-                    document.getElementById("colordiv").style.display = 'none';
+                    //document.getElementById("colordiv").style.display = 'none';
                     document.getElementById("isfulldaydiv").style.display = 'none';
 
                     if (selectedValue == "Leave")
@@ -493,7 +493,7 @@
                 else {
                     document.getElementById("partydiv").style.display = '';
                     document.getElementById("locdiv").style.display = '';
-                    document.getElementById("colordiv").style.display = '';
+                    //document.getElementById("colordiv").style.display = 'none';
                     document.getElementById("isfulldaydiv").style.display = '';
                     document.getElementById("subjectdiv").style.display = '';
                 }
@@ -506,7 +506,7 @@
                 if (selectedValue == "Leave" || selectedValue == "Personal") {
                     document.getElementById("partydiv").style.display = 'none';
                     document.getElementById("locdiv").style.display = 'none';
-                    document.getElementById("colordiv").style.display = 'none';
+                    //document.getElementById("colordiv").style.display = 'none';
                     document.getElementById("isfulldaydiv").style.display = 'none';
 
                     if (selectedValue == "Leave")
@@ -515,7 +515,7 @@
                 else {
                     document.getElementById("partydiv").style.display = '';
                     document.getElementById("locdiv").style.display = '';
-                    document.getElementById("colordiv").style.display = '';
+                    //document.getElementById("colordiv").style.display = 'none';
                     document.getElementById("isfulldaydiv").style.display = '';
                     document.getElementById("subjectdiv").style.display = '';
                     }
@@ -556,7 +556,7 @@
                 if (selectedValue == "Leave" || selectedValue == "Personal") {
                     document.getElementById("partydiv").style.display = 'none';
                     document.getElementById("locdiv").style.display = 'none';
-                    document.getElementById("colordiv").style.display = 'none';
+                    //document.getElementById("colordiv").style.display = 'none';
                     document.getElementById("isfulldaydiv").style.display = 'none';
 
                     if (selectedValue == "Leave")
@@ -565,7 +565,7 @@
                 else {
                     document.getElementById("partydiv").style.display = '';
                     document.getElementById("locdiv").style.display = '';
-                    document.getElementById("colordiv").style.display = '';
+                    //document.getElementById("colordiv").style.display = 'none';
                     document.getElementById("isfulldaydiv").style.display = '';
                     document.getElementById("subjectdiv").style.display = '';
                 }
@@ -661,7 +661,8 @@
         });
 
         window.onload = function () {
-            document.getElementById("hideEventType").style.display = 'none';
+            //document.getElementById("hideEventType").style.display = 'none';
+            document.getElementById("colordiv").style.display = 'none';
         }
     </script>
 

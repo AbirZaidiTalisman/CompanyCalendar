@@ -59,6 +59,21 @@
                     color: #333333;
                     background-color: blue;
                 }
+            body {
+    font-family: 'Arial Rounded MT';
+  font-size: 14px;
+  line-height: 1.42857143;
+
+    background: url('../../Content/Login_v1/images/milky-way.jpg');
+    opacity:0.8;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-attachment: fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: auto;
+}
     </style>
 </head>
 <body style="padding:initial">
@@ -66,9 +81,9 @@
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
+                    <span class="icon-bar" style="color:black">-</span>
+                    <span class="icon-bar" style="color:black">-</span>
+                    <span class="icon-bar" style="color:black">-</span>
                 </button>
                 <a class="navbar-brand disabled" href="#">FCI GROUP</a>
             </div>
@@ -102,12 +117,14 @@
     </nav>
 
 
-    <div class="container body-content">
+    <div class="container body-content" style="background-color:white; font-style:italic; font-weight: bold; font-display:inherit; color:darkblue; border-radius:25px">
+        <br />
         @RenderBody()
-        <hr />
+        <br />
         <footer>
-            <p><b>&copy; @DateTime.Now.Year - Developed By ERP & IT</b></p>
+            <p><b>&copy; @DateTime.Now.Year - Developed By IT & ERP</b></p>
         </footer>
+        <br />
     </div>
     @*<script src="~/Scripts/jquery-1.10.2.min.js"></script>*@
     @*<script src="~/Scripts/bootstrap.min.js"></script>*@
