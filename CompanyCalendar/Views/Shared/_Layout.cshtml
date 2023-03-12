@@ -45,35 +45,36 @@
                 color: #ffffff;
             }
 
-            /* for dropdown only - change the color of droodown */
+             /*for dropdown only - change the color of droodown*/
             .navbar-custom .dropdown-menu {
-                background-color: #ff5500;
+                background-color: azure;
             }
 
             .navbar-custom .dropdown-item {
-                color: #ffffff;
+                font-size:16px;
+                color: black;
             }
 
                 .navbar-custom .dropdown-item:hover,
                 .navbar-custom .dropdown-item:focus {
-                    color: #333333;
-                    background-color: blue;
+                    color: black;
+                    background-color: whitesmoke;
                 }
             body {
-    font-family: 'Arial Rounded MT';
-  font-size: 14px;
-  line-height: 1.42857143;
+                    font-family: 'Arial Rounded MT';
+                    font-size: 14px;
+                    line-height: 1.42857143;
 
-    background: url('../../Content/Login_v1/images/milky-way.jpg');
-    opacity:0.8;
-    background-repeat: no-repeat;
-    background-position: center center;
-    background-attachment: fixed;
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
-    background-size: auto;
-}
+                    background: url('../../Content/Login_v1/images/milky-way.jpg');
+                    opacity:0.8;
+                    background-repeat: no-repeat;
+                    background-position: center center;
+                    background-attachment: fixed;
+                    /*-webkit-background-size: cover;
+                    -moz-background-size: cover;
+                    -o-background-size: cover;*/
+                    background-size: auto;
+            }
     </style>
 </head>
 <body style="padding:initial">
@@ -100,19 +101,36 @@
                     </li>
                 </ul>
             </div>
-            <div class="navbar-default" style="float:right !important" >
-                <ul class="nav navbar-nav float-r">
+            <div class="navbar-default" style="float:right !important">
+                @*<ul class="nav navbar-nav dropdown float-r">
                     <li class="nav-item">
                         @{
-                                HttpCookie viewCookie = Request.Cookies["LoggedIn"];
-                                var name = viewCookie["userName"].ToString();
+                            HttpCookie viewCookie = Request.Cookies["LoggedIn"];
+                            var name = viewCookie["userName"].ToString();
 
-                        <a class="nav-link" href="@Url.Action("Logout", "User")"><b>(@name) Logout</b></a>;
+                            <a class="nav-link" href="@Url.Action("Logout", "User")"><b>(@name) Logout</b></a>;
                         }
+                    </li>
+                </ul>*@
+                <ul class="nav navbar-nav ms-auto">
+                    <li class="nav-item dropdown">
+                        @{
+                            HttpCookie viewCookie2 = Request.Cookies["LoggedIn"];
+                            var name2 = viewCookie2["userName"].ToString();
+
+
+                        <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">@name2</a>
+                        <div class="dropdown-menu">
+                            <div class="dropdown-divider"></div>
+                            <a href="#" class="dropdown-item">Change Password</a>
+                            <div class="dropdown-divider"></div>
+                            <a href="@Url.Action("Logout", "User")" class="dropdown-item">Logout</a>
+
+                        </div>
+                            }
                     </li>
                 </ul>
             </div>
-
         </div>
     </nav>
 
@@ -127,7 +145,7 @@
         <br />
     </div>
     @*<script src="~/Scripts/jquery-1.10.2.min.js"></script>*@
-    @*<script src="~/Scripts/bootstrap.min.js"></script>*@
+    @*<script src="~/Content/popper.min.js"></script>*@
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
