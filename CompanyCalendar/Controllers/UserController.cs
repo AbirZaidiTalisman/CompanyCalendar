@@ -80,5 +80,35 @@ namespace CompanyCalendar.Controllers
 
             return RedirectToAction("Login", "User");
         }
+        public ActionResult ChangePassword(string email, string newPass, string repPass)
+        {
+            HttpCookie getCookie = Request.Cookies["LoggedIn"];
+
+            
+            string password = getCookie["password"].ToString();
+
+            if (newPass != null && repPass != null)
+            {
+                var details = db.Users.Where(u => u.Email == email && u.Password == password).FirstOrDefault();
+
+                if (details != null)
+                {
+                    if (newPass == repPass)
+                    {
+                        details.Password = newPass;
+                        db.SaveChanges();
+                    }
+                }
+
+                getCookie.Values["userName"] = details.UserName;
+                getCookie.Values["email"] = details.Email;
+                getCookie.Values["EmpID"] = details.EmpID;
+                getCookie.Values["UserID"] = details.UserID.ToString();
+                getCookie.Values["password"] = newPass;
+                getCookie.Expires.AddDays(365);
+                this.ControllerContext.HttpContext.Response.Cookies.Add(getCookie);
+            }
+            return RedirectToAction("MyCalendar", "Home");
+        }
     }
 }

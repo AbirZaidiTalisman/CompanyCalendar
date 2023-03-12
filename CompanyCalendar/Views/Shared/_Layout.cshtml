@@ -122,7 +122,7 @@
                         <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">@name2</a>
                         <div class="dropdown-menu">
                             <div class="dropdown-divider"></div>
-                            <a href="#" class="dropdown-item">Change Password</a>
+                            <a href="#" class="dropdown-item" data-toggle="modal" data-target="#ChangePassword">Change Password</a>
                             <div class="dropdown-divider"></div>
                             <a href="@Url.Action("Logout", "User")" class="dropdown-item">Logout</a>
 
@@ -139,6 +139,93 @@
         <br />
         @RenderBody()
         <br />
+        <div class="modal fade" id="ChangePassword" data-backdrop="static">
+            <div class="modal-dialog modal-md">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 style="font-style:normal">Change Password</h3>
+                    </div>
+                    <div class="modal-body">
+                        <form method="post" action="/User/ChangePassword">
+                            <table border="0" class="table table-condensed">
+                                <tr>
+                                    <td>
+                                        Current Password:
+                                    </td>
+                                    <td>&ensp;</td>
+                                    <td>
+                                        @{ HttpCookie getCookie2 = Request.Cookies["LoggedIn"]; var pass = getCookie2["password"].ToString();
+                                            <input type="password" name="currPass" id="txtCurrPass" class="form-control" value=@pass disabled="disabled" />
+                                            }
+                                        </td>
+                                </tr>
+                                @*<tr>
+                                    <td>
+                                        <br />
+                                    </td>
+                                </tr>*@
+                                <tr>
+                                    <td>
+                                        email:
+                                    </td>
+                                    <td>
+                                        &ensp;
+                                    </td>
+                                    <td>
+                                        @{ HttpCookie getCookie = Request.Cookies["LoggedIn"]; var email = getCookie["email"].ToString();
+                                        <input type="text" name="email" value="@email" readonly="readonly" class="form-control"/>
+                                            }
+                                    </td>
+                                </tr>
+                                @*<tr>
+                                    <td>
+                                        <br />
+                                    </td>
+                                </tr>*@
+                                <tr>
+                                    <td>
+                                        New Password:
+                                    </td>
+                                    <td>&ensp;</td>
+                                    <td>
+                                        <input type="password" name="newPass" id="txtNewPass" class="form-control" placeholder="Enter New Password" required />
+                                    </td>
+                                </tr>
+                                @*<tr>
+                                    <td>
+                                        <br />
+                                    </td>
+                                </tr>*@
+                                <tr>
+                                    <td>
+                                        Repeat New Password:
+                                    </td>
+                                    <td>&ensp;</td>
+                                    <td>
+                                        <input type="password" name="repPass" id="txtRepPass" class="form-control" placeholder="Confirm New Password" required/>
+                                    </td>
+                                </tr>
+                                @*<tr>
+                                    <td>
+                                        <br />
+                                    </td>
+                                </tr>*@
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" onclick="showPass()"><b style="font-style:normal;color:black"> Show Passwords</b>
+                                    </td>
+                                </tr>
+                            </table>
+                            <div class="modal-footer">
+                                <span class="float-l" style="float:left" id='message'></span>
+                                <button type="submit" class="btn btn-success">Save</button>
+                                <button data-dismiss="modal" class="btn btn-danger">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
         <footer>
             <p><b>&copy; @DateTime.Now.Year - Developed By IT & ERP</b></p>
         </footer>
@@ -158,6 +245,38 @@
                 return this.href == url;
             }).parent().addClass('active');
         });
+
+        $('#txtNewPass, #txtRepPass').on('keyup', function () {
+            if ($('#txtNewPass').val() == $('#txtRepPass').val()) {
+                $('#message').html('Matching').css('color', 'green');
+            } else 
+                $('#message').html('Not Matching').css('color', 'red');
+        });
+
+    function showPass() {
+        //var x = document.getElementById("txtCurrPass");
+        var y = document.getElementById("txtNewPass");
+        var z = document.getElementById("txtRepPass");
+
+        //if (x.type === "password") {
+        //    x.type = "text";
+        //} else {
+        //    x.type = "password";
+        //}
+
+        if (y.type === "password") {
+            y.type = "text";
+        } else {
+            y.type = "password";
+        }
+
+        if (z.type === "password") {
+            z.type = "text";
+        } else {
+            z.type = "password";
+        }
+    } 
+
     </script>
 
 </body>
