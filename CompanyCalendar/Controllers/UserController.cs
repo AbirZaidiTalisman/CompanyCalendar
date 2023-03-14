@@ -108,7 +108,7 @@ namespace CompanyCalendar.Controllers
                 getCookie.Expires.AddDays(365);
                 this.ControllerContext.HttpContext.Response.Cookies.Add(getCookie);
             }
-            return RedirectToAction("MyCalendar", "Home");
+            return Redirect(Request.UrlReferrer.ToString());
         }
     }
 }
