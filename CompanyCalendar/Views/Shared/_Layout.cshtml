@@ -45,13 +45,13 @@
                 color: #ffffff;
             }
 
-             /*for dropdown only - change the color of droodown*/
+            /*for dropdown only - change the color of droodown*/
             .navbar-custom .dropdown-menu {
                 background-color: azure;
             }
 
             .navbar-custom .dropdown-item {
-                font-size:16px;
+                font-size: 16px;
                 color: black;
             }
 
@@ -60,21 +60,21 @@
                     color: black;
                     background-color: whitesmoke;
                 }
-            body {
-                    font-family: 'Arial Rounded MT';
-                    font-size: 14px;
-                    line-height: 1.42857143;
 
-                    background: url('../../Content/Login_v1/images/milky-way.jpg');
-                    opacity:0.8;
-                    background-repeat: no-repeat;
-                    background-position: center center;
-                    background-attachment: fixed;
-                    /*-webkit-background-size: cover;
+        body {
+            font-family: 'Arial Rounded MT';
+            font-size: 14px;
+            line-height: 1.42857143;
+            background: url('../../Content/Login_v1/images/milky-way.jpg');
+            opacity: 0.8;
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-attachment: fixed;
+            /*-webkit-background-size: cover;
                     -moz-background-size: cover;
                     -o-background-size: cover;*/
-                    background-size: auto;
-            }
+            background-size: auto;
+        }
     </style>
 </head>
 <body style="padding:initial">
@@ -102,16 +102,6 @@
                 </ul>
             </div>
             <div class="navbar-default" style="float:right !important">
-                @*<ul class="nav navbar-nav dropdown float-r">
-                    <li class="nav-item">
-                        @{
-                            HttpCookie viewCookie = Request.Cookies["LoggedIn"];
-                            var name = viewCookie["userName"].ToString();
-
-                            <a class="nav-link" href="@Url.Action("Logout", "User")"><b>(@name) Logout</b></a>;
-                        }
-                    </li>
-                </ul>*@
                 <ul class="nav navbar-nav ms-auto">
                     <li class="nav-item dropdown">
                         @{
@@ -119,21 +109,19 @@
                             var name2 = viewCookie2["userName"].ToString();
 
 
-                        <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">@name2 <strong style="font-size:x-large">&#10549;</strong></a>
-                        <div class="dropdown-menu">
-                            <div class="dropdown-divider"></div>
-                            <a href="#" class="dropdown-item" data-toggle="modal" data-target="#ChangePassword">Change Password</a>
-                            <div class="dropdown-divider"></div>
-                            <a href="@Url.Action("Logout", "User")" class="dropdown-item">Logout</a>
-
-                        </div>
-                            }
+                            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">@name2 <strong style="font-size:x-large">&#10549;</strong></a>
+                            <div class="dropdown-menu">
+                                <div class="dropdown-divider"></div>
+                                <a href="#" class="dropdown-item" data-toggle="modal" data-target="#ChangePassword">Change Password</a>
+                                <div class="dropdown-divider"></div>
+                                <a href="@Url.Action("Logout", "User")" class="dropdown-item">Logout</a>
+                            </div>
+                        }
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
-
 
     <div class="container body-content" style="background-color:white; font-style:italic; font-weight: bold; font-display:inherit; color:darkblue; border-radius:25px">
         <br />
@@ -156,14 +144,10 @@
                                     <td>
                                         @{ HttpCookie getCookie2 = Request.Cookies["LoggedIn"]; var pass = getCookie2["password"].ToString();
                                             <input type="password" name="currPass" id="txtCurrPass" class="form-control" value=@pass disabled="disabled" />
-                                            }
-                                        </td>
-                                </tr>
-                                @*<tr>
-                                    <td>
-                                        <br />
+                                        }
                                     </td>
-                                </tr>*@
+                                </tr>
+
                                 <tr>
                                     <td>
                                         email:
@@ -173,15 +157,11 @@
                                     </td>
                                     <td>
                                         @{ HttpCookie getCookie = Request.Cookies["LoggedIn"]; var email = getCookie["email"].ToString();
-                                        <input type="text" name="email" value="@email" readonly="readonly" class="form-control"/>
-                                            }
+                                            <input type="text" name="email" value="@email" readonly="readonly" class="form-control" />
+                                        }
                                     </td>
                                 </tr>
-                                @*<tr>
-                                    <td>
-                                        <br />
-                                    </td>
-                                </tr>*@
+
                                 <tr>
                                     <td>
                                         New Password:
@@ -191,25 +171,17 @@
                                         <input type="password" name="newPass" id="txtNewPass" class="form-control" placeholder="Enter New Password" required />
                                     </td>
                                 </tr>
-                                @*<tr>
-                                    <td>
-                                        <br />
-                                    </td>
-                                </tr>*@
+
                                 <tr>
                                     <td>
                                         Repeat New Password:
                                     </td>
                                     <td>&ensp;</td>
                                     <td>
-                                        <input type="password" name="repPass" id="txtRepPass" class="form-control" placeholder="Confirm New Password" required/>
+                                        <input type="password" name="repPass" id="txtRepPass" class="form-control" placeholder="Confirm New Password" required />
                                     </td>
                                 </tr>
-                                @*<tr>
-                                    <td>
-                                        <br />
-                                    </td>
-                                </tr>*@
+
                                 <tr>
                                     <td>
                                         <input type="checkbox" onclick="showPass()"><b style="font-style:normal;color:black"> Show Passwords</b>
@@ -249,37 +221,37 @@
         $('#txtNewPass, #txtRepPass').on('keyup', function () {
             if ($('#txtNewPass').val() == $('#txtRepPass').val()) {
                 $('#message').html('Matching').css('color', 'green');
-            } else 
+            } else
                 $('#message').html('Not Matching').css('color', 'red');
         });
 
-    function showPass() {
-        //var x = document.getElementById("txtCurrPass");
-        var y = document.getElementById("txtNewPass");
-        var z = document.getElementById("txtRepPass");
+        function showPass() {
+            //var x = document.getElementById("txtCurrPass");
+            var y = document.getElementById("txtNewPass");
+            var z = document.getElementById("txtRepPass");
 
-        //if (x.type === "password") {
-        //    x.type = "text";
-        //} else {
-        //    x.type = "password";
-        //}
+            //if (x.type === "password") {
+            //    x.type = "text";
+            //} else {
+            //    x.type = "password";
+            //}
 
-        if (y.type === "password") {
-            y.type = "text";
-        } else {
-            y.type = "password";
+            if (y.type === "password") {
+                y.type = "text";
+            } else {
+                y.type = "password";
+            }
+
+            if (z.type === "password") {
+                z.type = "text";
+            } else {
+                z.type = "password";
+            }
         }
 
-        if (z.type === "password") {
-            z.type = "text";
-        } else {
-            z.type = "password";
-        }
-    } 
 
-   
-    function IfPost() {
-        if (document.getElementById("message").innerText == "Matching") {
+        function IfPost() {
+            if (document.getElementById("message").innerText == "Matching") {
 
 
                 return true;
@@ -288,7 +260,7 @@
 
                 return false;
             }
-            
+
         }
 
     </script>

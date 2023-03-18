@@ -152,6 +152,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>EventModel.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Models\EventModel1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>EventModel.edmx</DependentUpon>
+    </Compile>
     <Compile Include="Models\events_get_events_by_loginID_prc_Result.cs">
       <DependentUpon>EventModel.tt</DependentUpon>
     </Compile>
@@ -159,6 +164,9 @@
       <DependentUpon>EventModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\EventViewModel.cs" />
+    <Compile Include="Models\GetEventsTemp.cs">
+      <DependentUpon>EventModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Participant.cs">
       <DependentUpon>EventModel.tt</DependentUpon>
     </Compile>
@@ -235,7 +243,7 @@
     <Content Include="Scripts\bootstrap.min.js" />
     <EntityDeploy Include="Models\EventModel.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>EventModel.Designer.cs</LastGenOutput>
+      <LastGenOutput>EventModel1.Designer.cs</LastGenOutput>
     </EntityDeploy>
     <Content Include="Models\EventModel.edmx.diagram">
       <DependentUpon>EventModel.edmx</DependentUpon>

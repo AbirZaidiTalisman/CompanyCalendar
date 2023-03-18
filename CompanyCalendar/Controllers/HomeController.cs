@@ -240,7 +240,12 @@ namespace CompanyCalendar.Controllers
             e.CreatedOn = DateTime.UtcNow.Date;
             e.EventType = vm.EventType;
             e.EventLocation = vm.EventLocation;
-
+            e.RecurID = vm.RecurID;
+            e.IsRecur = vm.IsRecur;
+            e.RecurEnd = vm.RecurEnd;
+            e.RecurType = vm.RecurType;
+            
+            
 
             HttpCookie getCookie = Request.Cookies["LoggedIn"];
             int cookieUserID = 0;
@@ -253,107 +258,43 @@ namespace CompanyCalendar.Controllers
             var status = false;
             using (CalendarDBEntities1 dc = new CalendarDBEntities1())
             {
+                
                 if (e.EventID > 0)
                 {
                     //Update the event
-                    var v = dc.Events.Where(a => a.EventID == e.EventID).FirstOrDefault();
-                    if (v != null)
+
+                    if (vm.editType == "onward")
                     {
-                        if (e.EventType == "Leave")
+                        if (e.IsRecur == true)
                         {
-                            v.Subject = "On Leave";
+                            DeleteEvent(e.EventID.ToString());
                         }
-                        else
-                        {
-                            v.Subject = e.Subject;
-                        }
-
-                        v.Start = e.Start;
-                        v.End = e.End;
-                        v.Description = e.Description;
-                        v.IsFullDay = e.IsFullDay;
-
-                        if (e.EventType == "Leave")
-                        {
-                            v.ThemeColor = "#ffe6f7";
-                        }
-                        else if (e.EventType == "Personal")
-                        {
-                            v.ThemeColor = "#ffebe6";
-                        }
-                        else if (e.EventType == "Meeting")
-                        {
-                            v.ThemeColor = "#e6e6ff";
-                        }
-                        else
-                        {
-                            v.ThemeColor = e.ThemeColor;
-                        }
-
-                        v.CreatedBy = cookieUserID;
-                        v.CreatedOn = DateTime.UtcNow.Date;
-                        v.EventType = e.EventType;
-
-                        if (e.EventType == "Leave")
-                        {
-                            v.EventLocation = null;
-                        }
-                        else if (e.EventType == "Personal")
-                        {
-                            v.EventLocation = null;
-                        }
-                        else
-                        {
-                            v.EventLocation = e.EventLocation;
-                        }
-
+                    }
+                    else
+                    {
+                            UpdateEvent(e);
                     }
                 }
                 else
                 {
-                    if (e.EventType == "Meeting")
-                    {
-                        e.CreatedBy = cookieUserID;
-                        e.ThemeColor = "#e6e6ff";
-                        e.CreatedOn = DateTime.UtcNow.Date;
-                        dc.Events.Add(e);
-                    }
-                    else if(e.EventType == "Leave")
-                    {
-                        e.CreatedBy = cookieUserID;
-                        e.Subject = "On Leave";
-                        e.CreatedOn = DateTime.UtcNow.Date;
-                        e.EventLocation = null;
-                        e.ThemeColor = "#ffe6f7";
-                        dc.Events.Add(e);
-                    }
-                    else if (e.EventType == "Personal")
-                    {
-                        e.CreatedBy = cookieUserID;
-                        e.CreatedOn = DateTime.UtcNow.Date;
-                        e.EventLocation = null;
-                        e.ThemeColor = "#ffe6e6";
-                        dc.Events.Add(e);
-                    }
-                    else
-                    {
-                        e.CreatedBy = cookieUserID;
-                        e.CreatedOn = DateTime.UtcNow.Date;
-                        dc.Events.Add(e);
-                    }
+                    //New event insert
+                    NewEvent(e);
+                   
                 }
 
-                
-
-                dc.SaveChanges();
                 status = true;
 
                 int maxEventID = 0;
 
                 if (vm.EventID == 0)
-                    maxEventID = gdc.Events.Max(a => a.EventID);
+                {
+                    var getID = gdc.Events.Where(a => a.CreationID == e.CreationID).FirstOrDefault();
+                    maxEventID = getID.EventID;
+                }
                 else
+                {
                     maxEventID = vm.EventID;
+                }
 
                 try
                 {
@@ -369,6 +310,130 @@ namespace CompanyCalendar.Controllers
 
             }
             return new JsonResult { Data = new { status = status } };
+        }
+
+        void NewEvent(Event e)
+        {
+            HttpCookie getCookie = Request.Cookies["LoggedIn"];
+            int cookieUserID = 0;
+
+            if (getCookie != null)
+            {
+                cookieUserID = Convert.ToInt32(getCookie["UserID"]);
+            }
+
+
+            Guid creationID = Guid.NewGuid();
+            e.CreationID = creationID;
+
+            if (e.IsRecur == true)
+            {
+                Guid newRId = Guid.NewGuid();
+                e.RecurID = newRId;
+
+            }
+            else
+            {
+                e.RecurID = null;
+            }
+
+            if (e.EventType == "Meeting")
+            {
+                e.CreatedBy = cookieUserID;
+                e.ThemeColor = "#e6e6ff";
+                e.CreatedOn = DateTime.UtcNow.Date;
+
+                // dc.Events.Add(e);
+            }
+            else if (e.EventType == "Leave")
+            {
+                e.CreatedBy = cookieUserID;
+                e.Subject = "On Leave";
+                e.CreatedOn = DateTime.UtcNow.Date;
+                e.EventLocation = null;
+                e.ThemeColor = "#ffe6f7";
+                //  dc.Events.Add(e);
+            }
+            else if (e.EventType == "Personal")
+            {
+                e.CreatedBy = cookieUserID;
+                e.CreatedOn = DateTime.UtcNow.Date;
+                e.EventLocation = null;
+                e.ThemeColor = "#ffe6e6";
+                // dc.Events.Add(e);
+            }
+            else
+            {
+                e.CreatedBy = cookieUserID;
+                e.CreatedOn = DateTime.UtcNow.Date;
+                //dc.Events.Add(e);
+            }
+
+            gdc.Events.Add(e);
+            gdc.SaveChanges();
+        }
+        void UpdateEvent(Event e)
+        {
+            HttpCookie getCookie = Request.Cookies["LoggedIn"];
+            int cookieUserID = 0;
+
+            if (getCookie != null)
+            {
+                cookieUserID = Convert.ToInt32(getCookie["UserID"]);
+            }
+
+            var v = gdc.Events.Where(a => a.EventID == e.EventID).FirstOrDefault();
+            if (v != null)
+            {
+                if (e.EventType == "Leave")
+                {
+                    v.Subject = "On Leave";
+                }
+                else
+                {
+                    v.Subject = e.Subject;
+                }
+
+                v.Start = e.Start;
+                v.End = e.End;
+                v.Description = e.Description;
+                v.IsFullDay = e.IsFullDay;
+
+                if (e.EventType == "Leave")
+                {
+                    v.ThemeColor = "#ffe6f7";
+                }
+                else if (e.EventType == "Personal")
+                {
+                    v.ThemeColor = "#ffebe6";
+                }
+                else if (e.EventType == "Meeting")
+                {
+                    v.ThemeColor = "#e6e6ff";
+                }
+                else
+                {
+                    v.ThemeColor = e.ThemeColor;
+                }
+
+                v.CreatedBy = cookieUserID;
+                v.CreatedOn = DateTime.UtcNow.Date;
+                v.EventType = e.EventType;
+
+                if (e.EventType == "Leave")
+                {
+                    v.EventLocation = null;
+                }
+                else if (e.EventType == "Personal")
+                {
+                    v.EventLocation = null;
+                }
+                else
+                {
+                    v.EventLocation = e.EventLocation;
+                }
+                gdc.SaveChanges();
+            }
         }
 
         [HttpPost]
@@ -415,49 +480,113 @@ namespace CompanyCalendar.Controllers
         {
             try
             {
-                if (type == "Meeting")
-                {
-                    if (eventsId > 0)
-                    {
-                        var partyMembers = gdc.Participants.Where(u => u.EventID == eventsId).ToList();
+                var eventData = gdc.Events.Where(e => e.EventID == eventsId).FirstOrDefault();
+                bool isRecur = eventData.IsRecur.Value;
 
-                        foreach (var partyMember in partyMembers)
+                if (isRecur)
+                {
+                    Guid recurID = eventData.RecurID.Value;
+                    var eventList = gdc.Events.Where(e => e.RecurID == recurID).ToList();
+
+
+                    foreach (var e in eventList)
+                    {
+                        if (type == "Meeting")
                         {
-                            if (partyMember != null)
+                            if (e.EventID > 0)
                             {
-                                gdc.Participants.Remove(partyMember);
-                                gdc.SaveChanges();
+                                var partyMembers = gdc.Participants.Where(u => u.EventID == e.EventID).ToList();
+
+                                foreach (var partyMember in partyMembers)
+                                {
+                                    if (partyMember != null)
+                                    {
+                                        gdc.Participants.Remove(partyMember);
+                                        gdc.SaveChanges();
+                                    }
+                                }
+
+                                foreach (string selectedValue in selectedValues)
+                                {
+                                    User user = gdc.Users.Where(u => u.UserName == selectedValue).FirstOrDefault();
+
+                                    var saveMembers = new Participant();
+                                    saveMembers.EmpID = user.UserID;
+
+                                    saveMembers.EventID = Convert.ToInt32(e.EventID);
+                                    gdc.Participants.Add(saveMembers);
+                                    gdc.SaveChanges();
+                                }
+
+                            }
+
+
+                        }
+                        if ((type == "Leave" || type == "Personal"))
+                        {
+                            if (eventsId > 0)
+                            {
+                                var partyMembers = gdc.Participants.Where(u => u.EventID == e.EventID).ToList();
+
+                                foreach (var partyMember in partyMembers)
+                                {
+                                    if (partyMember != null)
+                                    {
+                                        gdc.Participants.Remove(partyMember);
+                                        gdc.SaveChanges();
+                                    }
+                                }
                             }
                         }
+                    }
+                }
+                else
+                {
 
-                        foreach (string selectedValue in selectedValues)
+                    if (type == "Meeting")
+                    {
+                        if (eventsId > 0)
                         {
-                            User user = gdc.Users.Where(u => u.UserName == selectedValue).FirstOrDefault();
+                            var partyMembers = gdc.Participants.Where(u => u.EventID == eventsId).ToList();
 
-                            var saveMembers = new Participant();
-                            saveMembers.EmpID = user.UserID;
+                            foreach (var partyMember in partyMembers)
+                            {
+                                if (partyMember != null)
+                                {
+                                    gdc.Participants.Remove(partyMember);
+                                    gdc.SaveChanges();
+                                }
+                            }
 
-                            saveMembers.EventID = Convert.ToInt32(eventsId);
-                            gdc.Participants.Add(saveMembers);
-                            gdc.SaveChanges();
+                            foreach (string selectedValue in selectedValues)
+                            {
+                                User user = gdc.Users.Where(u => u.UserName == selectedValue).FirstOrDefault();
+
+                                var saveMembers = new Participant();
+                                saveMembers.EmpID = user.UserID;
+
+                                saveMembers.EventID = Convert.ToInt32(eventsId);
+                                gdc.Participants.Add(saveMembers);
+                                gdc.SaveChanges();
+                            }
+
                         }
 
+
                     }
-
-                    
-                }
-                if ((type == "Leave" || type == "Personal"))
-                {
-                    if (eventsId > 0)
+                    if ((type == "Leave" || type == "Personal"))
                     {
-                        var partyMembers = gdc.Participants.Where(u => u.EventID == eventsId).ToList();
-
-                        foreach (var partyMember in partyMembers)
+                        if (eventsId > 0)
                         {
-                            if (partyMember != null)
+                            var partyMembers = gdc.Participants.Where(u => u.EventID == eventsId).ToList();
+
+                            foreach (var partyMember in partyMembers)
                             {
-                                gdc.Participants.Remove(partyMember);
-                                gdc.SaveChanges();
+                                if (partyMember != null)
+                                {
+                                    gdc.Participants.Remove(partyMember);
+                                    gdc.SaveChanges();
+                                }
                             }
                         }
                     }

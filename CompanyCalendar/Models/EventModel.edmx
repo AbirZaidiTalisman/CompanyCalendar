@@ -10,11 +10,16 @@
             <PropertyRef Name="EventID" />
           </Key>
           <Property Name="EventID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CreationID" Type="uniqueidentifier" />
+          <Property Name="RecurID" Type="uniqueidentifier" />
           <Property Name="Subject" Type="nvarchar(max)" />
           <Property Name="Description" Type="nvarchar(max)" />
           <Property Name="Start" Type="datetime" />
           <Property Name="End" Type="datetime" />
+          <Property Name="RecurEnd" Type="datetime" />
           <Property Name="IsFullDay" Type="bit" />
+          <Property Name="IsRecur" Type="bit" />
+          <Property Name="RecurType" Type="nvarchar" MaxLength="500" />
           <Property Name="ThemeColor" Type="nvarchar" MaxLength="50" />
           <Property Name="CreatedBy" Type="int" />
           <Property Name="CreatedOn" Type="datetime" />
@@ -105,36 +110,15 @@ warning 6002: The table/view 'CalendarDB.dbo.GetEventsTemp' does not have a prim
     <edmx:ConceptualModels>
       <Schema Namespace="CalendarDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityContainer Name="CalendarDBEntities1" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="Users" EntityType="CalendarDBModel.User" />
-          <EntitySet Name="Participants" EntityType="CalendarDBModel.Participant" />
           <FunctionImport Name="GetEventsByID" ReturnType="Collection(CalendarDBModel.events_get_events_by_loginID_prc_Result1)">
             <Parameter Name="loginID" Mode="In" Type="Int32" />
             <Parameter Name="EventType" Mode="In" Type="String" />
           </FunctionImport>
-          <EntitySet Name="GetEventsTemps" EntityType="CalendarDBModel.GetEventsTemp" />
           <EntitySet Name="Events" EntityType="CalendarDBModel.Event" />
-        </EntityContainer>
-        <EntityType Name="User">
-          <Key>
-            <PropertyRef Name="UserID" />
-          </Key>
-          <Property Name="UserID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="UserName" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="Role" Type="Int32" />
-          <Property Name="Email" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="Password" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="Department" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="Designation" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="EmpID" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-        </EntityType>
-        <EntityType Name="Participant">
-          <Key>
-            <PropertyRef Name="ParticipantID" />
-          </Key>
-          <Property Name="ParticipantID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="EmpID" Type="Int32" />
-          <Property Name="EventID" Type="Int32" />
-        </EntityType>
+          <EntitySet Name="Participants" EntityType="CalendarDBModel.Participant" />
+          <EntitySet Name="Users" EntityType="CalendarDBModel.User" />
+          <EntitySet Name="GetEventsTemps" EntityType="CalendarDBModel.GetEventsTemp" />
+          </EntityContainer>
         <ComplexType Name="events_get_events_by_loginID_prc_Result">
           <Property Type="Int32" Name="EventID" Nullable="false" />
           <Property Type="String" Name="Subject" Nullable="true" />
@@ -172,7 +156,53 @@ warning 6002: The table/view 'CalendarDB.dbo.GetEventsTemp' does not have a prim
           <Property Type="DateTime" Name="End" Nullable="true" Precision="23" />
           <Property Type="Boolean" Name="IsFullDay" Nullable="true" />
           <Property Type="Int32" Name="UserID" Nullable="false" />
+          <Property Type="Guid" Name="RecurID" Nullable="true" />
+          <Property Type="Boolean" Name="IsRecur" Nullable="true" />
+          <Property Type="DateTime" Name="RecurEnd" Nullable="true" Precision="23" />
+          <Property Type="String" Name="RecurType" Nullable="true" MaxLength="500" />
           </ComplexType>
+        <EntityType Name="Event">
+          <Key>
+            <PropertyRef Name="EventID" />
+          </Key>
+          <Property Name="EventID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CreationID" Type="Guid" />
+          <Property Name="RecurID" Type="Guid" />
+          <Property Name="Subject" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Start" Type="DateTime" Precision="3" />
+          <Property Name="End" Type="DateTime" Precision="3" />
+          <Property Name="RecurEnd" Type="DateTime" Precision="3" />
+          <Property Name="IsFullDay" Type="Boolean" />
+          <Property Name="IsRecur" Type="Boolean" />
+          <Property Name="RecurType" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="ThemeColor" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="Int32" />
+          <Property Name="CreatedOn" Type="DateTime" Precision="3" />
+          <Property Name="EventType" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="EventLocation" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Participant">
+          <Key>
+            <PropertyRef Name="ParticipantID" />
+          </Key>
+          <Property Name="ParticipantID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EmpID" Type="Int32" />
+          <Property Name="EventID" Type="Int32" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="UserID" />
+          </Key>
+          <Property Name="UserID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserName" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Role" Type="Int32" />
+          <Property Name="Email" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Password" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Department" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Designation" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="EmpID" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+        </EntityType>
         <EntityType Name="GetEventsTemp">
           <Key>
             <PropertyRef Name="EventID" />
@@ -198,51 +228,12 @@ warning 6002: The table/view 'CalendarDB.dbo.GetEventsTemp' does not have a prim
           <Property Name="Title" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="EventLocation" Type="String" Nullable="false" MaxLength="27" FixedLength="false" Unicode="false" />
         </EntityType>
-        <EntityType Name="Event">
-          <Key>
-            <PropertyRef Name="EventID" />
-          </Key>
-          <Property Name="EventID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Subject" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Start" Type="DateTime" Precision="3" />
-          <Property Name="End" Type="DateTime" Precision="3" />
-          <Property Name="IsFullDay" Type="Boolean" />
-          <Property Name="ThemeColor" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="CreatedBy" Type="Int32" />
-          <Property Name="CreatedOn" Type="DateTime" Precision="3" />
-          <Property Name="EventType" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="EventLocation" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-        </EntityType>
-      </Schema>
+        </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="CalendarDBModelStoreContainer" CdmEntityContainer="CalendarDBEntities1">
-          <EntitySetMapping Name="Users">
-            <EntityTypeMapping TypeName="CalendarDBModel.User">
-              <MappingFragment StoreEntitySet="Users">
-                <ScalarProperty Name="EmpID" ColumnName="EmpID" />
-                <ScalarProperty Name="Designation" ColumnName="Designation" />
-                <ScalarProperty Name="Department" ColumnName="Department" />
-                <ScalarProperty Name="Password" ColumnName="Password" />
-                <ScalarProperty Name="Email" ColumnName="Email" />
-                <ScalarProperty Name="Role" ColumnName="Role" />
-                <ScalarProperty Name="UserName" ColumnName="UserName" />
-                <ScalarProperty Name="UserID" ColumnName="UserID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Participants">
-            <EntityTypeMapping TypeName="CalendarDBModel.Participant">
-              <MappingFragment StoreEntitySet="Participants">
-                <ScalarProperty Name="EventID" ColumnName="EventID" />
-                <ScalarProperty Name="EmpID" ColumnName="EmpID" />
-                <ScalarProperty Name="ParticipantID" ColumnName="ParticipantID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <FunctionImportMapping FunctionImportName="GetEventsByID" FunctionName="CalendarDBModel.Store.events_get_events_by_loginID_prc">
           <ResultMapping>
               <ComplexTypeMapping TypeName="CalendarDBModel.events_get_events_by_loginID_prc_Result1">
@@ -265,9 +256,58 @@ warning 6002: The table/view 'CalendarDB.dbo.GetEventsTemp' does not have a prim
                 <ScalarProperty Name="End" ColumnName="End" />
                 <ScalarProperty Name="IsFullDay" ColumnName="IsFullDay" />
                 <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="RecurID" ColumnName="RecurID" />
+                <ScalarProperty Name="IsRecur" ColumnName="IsRecur" />
+                <ScalarProperty Name="RecurEnd" ColumnName="RecurEnd" />
+                <ScalarProperty Name="RecurType" ColumnName="RecurType" />
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
+          <EntitySetMapping Name="Events">
+            <EntityTypeMapping TypeName="CalendarDBModel.Event">
+              <MappingFragment StoreEntitySet="Events">
+                <ScalarProperty Name="EventLocation" ColumnName="EventLocation" />
+                <ScalarProperty Name="EventType" ColumnName="EventType" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="ThemeColor" ColumnName="ThemeColor" />
+                <ScalarProperty Name="RecurType" ColumnName="RecurType" />
+                <ScalarProperty Name="IsRecur" ColumnName="IsRecur" />
+                <ScalarProperty Name="IsFullDay" ColumnName="IsFullDay" />
+                <ScalarProperty Name="RecurEnd" ColumnName="RecurEnd" />
+                <ScalarProperty Name="End" ColumnName="End" />
+                <ScalarProperty Name="Start" ColumnName="Start" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Subject" ColumnName="Subject" />
+                <ScalarProperty Name="RecurID" ColumnName="RecurID" />
+                <ScalarProperty Name="CreationID" ColumnName="CreationID" />
+                <ScalarProperty Name="EventID" ColumnName="EventID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Participants">
+            <EntityTypeMapping TypeName="CalendarDBModel.Participant">
+              <MappingFragment StoreEntitySet="Participants">
+                <ScalarProperty Name="EventID" ColumnName="EventID" />
+                <ScalarProperty Name="EmpID" ColumnName="EmpID" />
+                <ScalarProperty Name="ParticipantID" ColumnName="ParticipantID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="CalendarDBModel.User">
+              <MappingFragment StoreEntitySet="Users">
+                <ScalarProperty Name="EmpID" ColumnName="EmpID" />
+                <ScalarProperty Name="Designation" ColumnName="Designation" />
+                <ScalarProperty Name="Department" ColumnName="Department" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Role" ColumnName="Role" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="GetEventsTemps">
             <EntityTypeMapping TypeName="CalendarDBModel.GetEventsTemp">
               <MappingFragment StoreEntitySet="GetEventsTemp">
@@ -292,24 +332,7 @@ warning 6002: The table/view 'CalendarDB.dbo.GetEventsTemp' does not have a prim
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Events">
-            <EntityTypeMapping TypeName="CalendarDBModel.Event">
-              <MappingFragment StoreEntitySet="Events">
-                <ScalarProperty Name="EventLocation" ColumnName="EventLocation" />
-                <ScalarProperty Name="EventType" ColumnName="EventType" />
-                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="ThemeColor" ColumnName="ThemeColor" />
-                <ScalarProperty Name="IsFullDay" ColumnName="IsFullDay" />
-                <ScalarProperty Name="End" ColumnName="End" />
-                <ScalarProperty Name="Start" ColumnName="Start" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="Subject" ColumnName="Subject" />
-                <ScalarProperty Name="EventID" ColumnName="EventID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-        </EntityContainerMapping>
+          </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
   </edmx:Runtime>

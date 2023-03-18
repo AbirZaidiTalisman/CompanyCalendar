@@ -12,23 +12,25 @@ namespace CompanyCalendar.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Event
+    public partial class GetEventsTemp
     {
         public int EventID { get; set; }
-        public Nullable<System.Guid> CreationID { get; set; }
-        public Nullable<System.Guid> RecurID { get; set; }
         public string Subject { get; set; }
         public string Description { get; set; }
-        public Nullable<System.DateTime> Start { get; set; }
-        public Nullable<System.DateTime> End { get; set; }
-        public Nullable<System.DateTime> RecurEnd { get; set; }
-        public Nullable<bool> IsFullDay { get; set; }
-        public Nullable<bool> IsRecur { get; set; }
-        public string RecurType { get; set; }
-        public string ThemeColor { get; set; }
-        public Nullable<int> CreatedBy { get; set; }
-        public Nullable<System.DateTime> CreatedOn { get; set; }
         public string EventType { get; set; }
+        public System.DateTime Start { get; set; }
+        public Nullable<System.DateTime> End { get; set; }
+        public Nullable<bool> IsFullDay { get; set; }
+        public string ThemeColor { get; set; }
+        public string UserName { get; set; }
+        public string Department { get; set; }
+        public string Designation { get; set; }
+        public string Email { get; set; }
+        public Nullable<int> Role { get; set; }
+        public string EmpID { get; set; }
+        public string Participant { get; set; }
+        public string LocCode { get; set; }
+        public string Title { get; set; }
         public string EventLocation { get; set; }
     }
 }

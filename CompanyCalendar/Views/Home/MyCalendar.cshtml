@@ -14,7 +14,7 @@
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
                 <h4 class="modal-title"><span id="eventTitle"></span></h4>
-            </div> 
+            </div>
             <div class="modal-body">
                 <button id="btnDelete" class="btn btn-default btn-sm pull-right">
                     <span class="glyphicon glyphicon-remove"></span> Remove
@@ -53,12 +53,19 @@
             <div class="modal-header">
                 <div class="row">
                     <div class="col-12">
-                        <div class="col-lg-9">
+                        <div class="col-lg-3">
                             <h4 class="modal-title">Save Event</h4>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="col-lg-6">
+                                <label><input type="radio" id="rdOnlyThis" name="EditChoice" checked="checked" value="only" /> <strong> Only This</strong></label>
+                            </div>
+                            <div class="col-lg-6">
+                                <label><input type="radio" name="EditChoice" id="rdOnward" value="onward"/> <strong> ONW</strong></label>
+                            </div>
                         </div>
                         <div class="col-lg-1 float-left">
                             <button type="button" id="btnSave" class="btn btn-success">Save</button>
-                            
                         </div>
                         <div class="col-lg-1"></div>
                         <div class="col-lg-1 float-left">
@@ -71,7 +78,7 @@
                 <form method="post">
                     <div class="">
                         <input type="hidden" id="hdEventID" value="0" />
-                        
+                        <input type="hidden" id="hdRecurID" value="" />
                         <div class="form-group">
                             <label>Event Type</label>
                             <select id="ddlEventType" class="form-control">
@@ -95,14 +102,14 @@
                                     <div class="form-group">
                                         <label>Start</label>
                                         <div class="input-group date" id="dtp1">
-                                            <input type="text" id="txtStart" class="form-control"/>
+                                            <input type="text" id="txtStart" class="form-control" />
                                             <span class="input-group-addon" style="width:0%">
                                                 <span class="glyphicon glyphicon-calendar"></span>
                                             </span>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-lg-4" style="padding-right:0">
+                                <div class="col-lg-4" style="padding-right:0; padding-left:0">
                                     <div class="form-group">
                                         <div id="divEndDate" style="display:none">
                                             <label>End</label>
@@ -119,13 +126,48 @@
 
                                 <div class="col-lg-4" style="padding-right:0" id="isfulldaydiv">
                                     <div class="form-group">
-                                        <label style="visibility:hidden">.</label>
-                                        <div class="checkbox">
-                                            <label><input type="checkbox" id="chkIsFullDay" checked="checked" /> <strong>Full Day</strong></label>
+                                        <div class="col-lg-6" style="padding-right:0; padding-left:0">
+                                            <label style="visibility:hidden">.</label>
+                                            <div class="checkbox">
+                                                <label><input type="checkbox" id="chkIsFullDay" checked="checked" /> <strong>Full Day</strong></label>
+                                            </div>
                                         </div>
+                                        <div class="col-lg-6" style="padding-right:0; padding-left:0">
+                                            <label style="visibility:hidden">.</label>
+                                            <div class="checkbox">
+                                                <label><input type="checkbox" id="chkRecur"  checked="checked"/> <strong>Recur</strong></label>
+                                            </div>
+                                        </div>
+                                        
+                                        
                                     </div>
                                 </div>
 
+                            </div>
+                        </div>
+
+                        <div class="row" style="padding-left:0">
+                            <div class="col-lg-12" style="padding-left:0">
+                                <div class="form-group" id="isRepeatdiv">
+                                    <div class="col-lg-6">
+                                        <label>Repeat:</label>
+                                        <select id="ddlRepeat" class="form-control">
+                                            <option value="Daily" selected="selected">Daily</option>
+                                            <option value="Weekly">Weekly</option>
+                                            <option value="Monthly">Monthly</option>
+                                            <option value="Yearly">Yearly</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-6">
+                                        <label>End</label>
+                                        <div class="input-group date" id="dpRcr">
+                                            <input type="text" id="txtReEnd" class="form-control" />
+                                            <span class="input-group-addon" style="width:0%">
+                                                <span class="glyphicon glyphicon-calendar"></span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -196,7 +238,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="row">
                             <hr />
                         </div>
@@ -254,7 +296,11 @@
                                 eventloc: v.EventLocation,
                                 isEmpty: false,
                                 loc: v.LocCode,
-                                ett: v.EventType
+                                ett: v.EventType,
+                                recurid: v.RecurID,
+                                isrecur: v.IsRecur,
+                                recurend: v.RecurEnd == null ? moment(new Date()) : moment(v.RecurEnd),
+                                recurtype: v.RecurType
                             });
                         })
                         GenerateCalender(events);
@@ -287,7 +333,7 @@
 
                     eventTextColor: 'black',
 
-                    //eventBorderColor: 'black', 
+                    //eventBorderColor: 'black',
 
                     displayEventEnd: false,
 
@@ -304,7 +350,7 @@
                         var $creator = $('<div/>');
                         var $uid = $('<div/>');
                         $description.append($('<p/>').html('<b>Event Type: </b>' + calEvent.ett));
-                        
+
 
                         if (calEvent.allDay) {
 
@@ -330,24 +376,24 @@
                         $creator.append($('<p/>').html('<b>Creator: </b>' + calEvent.subject));
                         $('#myModal #pCreator').empty().html($creator);
 
-                        
+
 
                         if (calEvent.userid == @ViewBag.uid) {
-                            
+
                             document.getElementById("btnDelete").style.display = '';
                             document.getElementById("btnEdit").style.display = '';
 
                         }
                         else {
-                            
+
                             document.getElementById("btnDelete").style.display = 'none';
                             document.getElementById("btnEdit").style.display = 'none';
                         }
-                        
+
 
                         $('#myModal').modal();
 
-                        
+
                     },
 
                     eventRender: function (eventObj, $el) {
@@ -366,7 +412,7 @@
 
                     selectable: true,
 
-                    
+
                     select: function (start, end) {
 
                         selectedEvent = {
@@ -376,12 +422,16 @@
                             start:start,
                             end: end,
                             eventTextColor: 'black',
-                            //eventBorderColor: 'black', 
+                            //eventBorderColor: 'black',
                             allDay: false,
                             color: '#85e085',
                             eventloc: 'TL1_BR1',
                             isEmpty: true,
-                            ett: "Meeting"
+                            ett: "Meeting",
+                            isrecur: false,
+                            recurid: null,
+                            recurend:'',
+                            recurtype: 'Daily'
                         };
                         openAddEditForm();
                         $('#calendar').fullCalendar('unselect');
@@ -429,8 +479,9 @@
                 let confirmAction = confirm("Are you sure Edit this event?");
                 if (confirmAction) {
                     checkedall.forEach(check_uncheck_checkbox);
-
+                    
                     openAddEditForm();
+                    
                 }
                 else {
                 }
@@ -443,30 +494,31 @@
             };
 
             $('#btnDelete').click(function () {
-                //  if (selectedEvent != null && confirm('Are you sure?')) {
-                $.ajax({
-                    type: "POST",
-                    url: '/home/DeleteEvent',
-                    data: { eventID: selectedEvent.eventID },
-                    success: function (data) {
-                        if (data.status) {
-                            //Refresh the calender
-                            let confirmAction = confirm("Are you sure Delete this event?");
-                            if (confirmAction) {
-                                FetchEventAndRenderCalendar();
+
+                let confirmAction = confirm("Are you sure Delete this event?");
+                if (confirmAction) {
+
+                    $.ajax({
+                        type: "POST",
+                        url: '/home/DeleteEvent',
+                        data: { eventID: selectedEvent.eventID },
+                        success: function (data) {
+                            if (data.status) {
+                                //Refresh the calender
                                 $('#myModal').modal('hide'),
-                                    window.location.reload();
+                                    FetchEventAndRenderCalendar();
+                                window.location.reload();
                             }
+                        },
+                        error: function () {
+                            alert('Failed');
                         }
-                    },
-                    error: function () {
-                        alert('Failed');
-                    }
-                })
-                // }
+                    })
+                } else {
+                }
             })
 
-            
+
 
             $('#chkIsFullDay').change(function () {
                 if ($(this).is(':checked')) {
@@ -474,6 +526,15 @@
                 }
                 else {
                     $('#divEndDate').show();
+                }
+            });
+
+             $('#chkRecur').change(function () {
+                if ($(this).is(':checked')) {
+                    $('#isRepeatdiv').show();
+                }
+                else {
+                    $('#isRepeatdiv').hide();
                 }
             });
 
@@ -519,37 +580,52 @@
                     document.getElementById("isfulldaydiv").style.display = '';
                     document.getElementById("subjectdiv").style.display = '';
                     }
-                    });
-
+                });
+                
                 if (selectedEvent != null & selectedEvent.isEmpty) {
                     $('#hdEventID').val(selectedEvent.eventID);
+                    $('#hdRecurID').val(selectedEvent.recurid);
                     $('#txtSubject').val(selectedEvent.title);
                     $('#txtStart').val(selectedEvent.start.format('DD/MM/YYYY hh:mm a'));
-                    $('#chkIsFullDay').prop("checked", selectedEvent.IsFullDay || false);
+                    $('#chkIsFullDay').prop("checked", selectedEvent.allDay || false);
                     $('#chkIsFullDay').change();
+                    $('#chkRecur').prop("checked", selectedEvent.isrecur || false);
+                    $('#chkRecur').change();
                     $('#txtEnd').val(selectedEvent.end != null ? selectedEvent.end.format('DD/MM/YYYY hh:mm a') : '');
+                 
+                    $('#txtReEnd').val(selectedEvent.recurend != null ? selectedEvent.recurend.format('DD/MM/YYYY hh:mm a') : '');
+
                     $('#txtDescription').val(selectedEvent.description);
                     $('#ddThemeColor').val(selectedEvent.color);
                     $('#ddEventLoc').val(selectedEvent.eventloc);
                     $('#ddlEventType').val(selectedEvent.ett);
-
+                    $('#ddlRepeat').val(selectedEvent.recurtype);
+                   
                     $('input[name="selectedMembers"]').each(function () {
                         this.checked = false;
                     });
 
                 }
                 else if (selectedEvent != null) {
+                     
                     $('#hdEventID').val(selectedEvent.eventID);
+                    $('#hdRecurID').val(selectedEvent.recurid);
                     $('#txtSubject').val(selectedEvent.title);
                     $('#txtStart').val(selectedEvent.start.format('DD/MM/YYYY hh:mm a'));
-                    $('#chkIsFullDay').prop("checked", selectedEvent.IsFullDay || false);
+                    $('#chkIsFullDay').prop("checked", selectedEvent.allDay || false);
                     $('#chkIsFullDay').change();
+                    $('#chkRecur').prop("checked", selectedEvent.isrecur || false);
+                    $('#chkRecur').change();
+
                     $('#txtEnd').val(selectedEvent.end != null ? selectedEvent.end.format('DD/MM/YYYY hh:mm a') : '');
+                    
+                    $('#txtReEnd').val(selectedEvent.recurend != null ? selectedEvent.recurend.format('DD/MM/YYYY hh:mm a') : '');
+
                     $('#txtDescription').val(selectedEvent.description);
                     $('#ddThemeColor').val(selectedEvent.color);
                     $('#ddEventLoc').val(selectedEvent.loc);
                     $('#ddlEventType').val(selectedEvent.ett);
-
+                    $('#ddlRepeat').val(selectedEvent.recurtype);
                 }
 
                 var selectedValue = $("#ddlEventType option:selected").text();
@@ -591,6 +667,7 @@
                 }
                 else {
                     var startDate = moment($('#txtStart').val(), "DD/MM/YYYY hh:mm a").toDate();
+
                     var endDate = moment($('#txtEnd').val(), "DD/MM/YYYY hh:mm a").toDate();
                     if (startDate > endDate) {
                         alert('Invalid end date');
@@ -598,13 +675,26 @@
                     }
                 }
 
+                if ($('#chkRecur').is(':checked') == true && $('#txtReEnd').val().trim() == "") {
+                    alert('Recur End date required');
+                    return;
+                }
+
                 var selectedValues = [];
                 $('#members input:checked').each(function () {
                     selectedValues.push($(this).val());
                 });
 
+                var checkedRadio = '';
+                if (document.getElementById('rdOnlyThis').checked) {
+                    checkedRadio = 'only';
+                }else if(document.getElementById('rdOnward').checked) {
+                    checkedRadio = 'onward';
+                }
+
                 var data = {
                     EventID: $('#hdEventID').val(),
+                    RecurID: $('#hdRecurID').val(),
                     Subject: $('#txtSubject').val().trim(),
                     Start: $('#txtStart').val().trim(),
                     End: $('#chkIsFullDay').is(':checked') ? null : $('#txtEnd').val().trim(),
@@ -613,7 +703,11 @@
                     IsFullDay: $('#chkIsFullDay').is(':checked'),
                     EventLocation: $('#ddEventLoc').val(),
                     EventType: $('#ddlEventType').val(),
-                    selectedValues: selectedValues
+                    IsRecur: $('#chkRecur').is(':checked'),
+                    RecurType: $('#ddlRepeat').val(),
+                    RecurEnd: $('#txtReEnd').val(),
+                    selectedValues: selectedValues,
+                    editType: checkedRadio
                 }
                 SaveEvent(data);
 
@@ -656,7 +750,7 @@
             });
         });
 
-        $('#dtp1,#dtp2').datetimepicker({
+        $('#dtp1,#dtp2,#dpRcr').datetimepicker({
                 format: 'DD/MM/YYYY hh:mm a'
         });
 

@@ -28,8 +28,9 @@ namespace CompanyCalendar.Models
         }
     
         public virtual DbSet<Event> Events { get; set; }
-        public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<Participant> Participants { get; set; }
+        public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<GetEventsTemp> GetEventsTemps { get; set; }
     
         public virtual ObjectResult<events_get_events_by_loginID_prc_Result1> GetEventsByID(Nullable<int> loginID, string eventType)
         {

@@ -52,7 +52,7 @@ namespace CompanyCalendar.Controllers
                     cookie["password"] = details.Password;
                     cookie["EmpID"] = details.EmpID;
                     cookie["UserID"] = details.UserID.ToString();
-                    cookie.Expires.AddDays(365);
+                    cookie.Expires = DateTime.Now.AddDays(365);
                     this.ControllerContext.HttpContext.Response.Cookies.Add(cookie);
                     return RedirectToAction("MyCalendar", "Home");
                 }
@@ -105,7 +105,7 @@ namespace CompanyCalendar.Controllers
                 getCookie.Values["EmpID"] = details.EmpID;
                 getCookie.Values["UserID"] = details.UserID.ToString();
                 getCookie.Values["password"] = newPass;
-                getCookie.Expires.AddDays(365);
+                getCookie.Expires = DateTime.Now.AddDays(365);
                 this.ControllerContext.HttpContext.Response.Cookies.Add(getCookie);
             }
             return Redirect(Request.UrlReferrer.ToString());
