@@ -14,7 +14,7 @@
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
                 <h4 class="modal-title"><span id="eventTitle"></span></h4>
-            </div> 
+            </div>
             <div class="modal-body">
                 <button id="btnDelete" class="btn btn-default btn-sm pull-right">
                     <span class="glyphicon glyphicon-remove"></span> Remove
@@ -58,7 +58,7 @@
                         </div>
                         <div class="col-lg-1 float-left">
                             <button type="button" id="btnSave" class="btn btn-success">Save</button>
-                            
+
                         </div>
                         <div class="col-lg-1"></div>
                         <div class="col-lg-1 float-left">
@@ -71,7 +71,7 @@
                 <form method="post">
                     <div class="">
                         <input type="hidden" id="hdEventID" value="0" />
-                        
+
                         <div class="form-group">
                             <label>Event Type</label>
                             <select id="ddlEventType" class="form-control">
@@ -95,7 +95,7 @@
                                     <div class="form-group">
                                         <label>Start</label>
                                         <div class="input-group date" id="dtp1">
-                                            <input type="text" id="txtStart" class="form-control"/>
+                                            <input type="text" id="txtStart" class="form-control" />
                                             <span class="input-group-addon" style="width:0%">
                                                 <span class="glyphicon glyphicon-calendar"></span>
                                             </span>
@@ -196,7 +196,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="row">
                             <hr />
                         </div>
@@ -287,7 +287,7 @@
 
                     eventTextColor: 'black',
 
-                    //eventBorderColor: 'black', 
+                    //eventBorderColor: 'black',
 
                     displayEventEnd: false,
 
@@ -304,7 +304,7 @@
                         var $creator = $('<div/>');
                         var $uid = $('<div/>');
                         $description.append($('<p/>').html('<b>Event Type: </b>' + calEvent.ett));
-                        
+
 
                         if (calEvent.allDay) {
 
@@ -330,24 +330,24 @@
                         $creator.append($('<p/>').html('<b>Creator: </b>' + calEvent.subject));
                         $('#myModal #pCreator').empty().html($creator);
 
-                        
+
 
                         if (calEvent.userid == @ViewBag.uid) {
-                            
+
                             document.getElementById("btnDelete").style.display = '';
                             document.getElementById("btnEdit").style.display = '';
 
                         }
                         else {
-                            
+
                             document.getElementById("btnDelete").style.display = 'none';
                             document.getElementById("btnEdit").style.display = 'none';
                         }
-                        
+
 
                         $('#myModal').modal();
 
-                        
+
                     },
 
                     eventRender: function (eventObj, $el) {
@@ -366,7 +366,7 @@
 
                     selectable: true,
 
-                    
+
                     select: function (start, end) {
 
                         selectedEvent = {
@@ -376,7 +376,7 @@
                             start:start,
                             end: end,
                             eventTextColor: 'black',
-                            //eventBorderColor: 'black', 
+                            //eventBorderColor: 'black',
                             allDay: false,
                             color: '#85e085',
                             eventloc: 'TL1_BR1',
@@ -443,30 +443,31 @@
             };
 
             $('#btnDelete').click(function () {
-                //  if (selectedEvent != null && confirm('Are you sure?')) {
-                $.ajax({
-                    type: "POST",
-                    url: '/home/DeleteEvent',
-                    data: { eventID: selectedEvent.eventID },
-                    success: function (data) {
-                        if (data.status) {
-                            //Refresh the calender
-                            let confirmAction = confirm("Are you sure Delete this event?");
-                            if (confirmAction) {
-                                FetchEventAndRenderCalendar();
+
+                let confirmAction = confirm("Are you sure Delete this event?");
+                if (confirmAction) {
+
+                    $.ajax({
+                        type: "POST",
+                        url: '/home/DeleteEvent',
+                        data: { eventID: selectedEvent.eventID },
+                        success: function (data) {
+                            if (data.status) {
+                                //Refresh the calender
                                 $('#myModal').modal('hide'),
-                                    window.location.reload();
+                                    FetchEventAndRenderCalendar();
+                                window.location.reload();
                             }
+                        },
+                        error: function () {
+                            alert('Failed');
                         }
-                    },
-                    error: function () {
-                        alert('Failed');
-                    }
-                })
-                // }
+                    })
+                } else {
+                } 
             })
 
-            
+
 
             $('#chkIsFullDay').change(function () {
                 if ($(this).is(':checked')) {
