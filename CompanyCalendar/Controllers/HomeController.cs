@@ -164,7 +164,7 @@ namespace CompanyCalendar.Controllers
             //ViewBag.party = participantlist;
             //return View();
         }
-       
+
         //office calendar Controller
         public JsonResult GetEvents()
         {
@@ -176,7 +176,7 @@ namespace CompanyCalendar.Controllers
                 cookieUserID = Convert.ToInt32(getCookie["UserID"]);
             }
 
-                using (CalendarDBEntities1 dc = new CalendarDBEntities1())
+            using (CalendarDBEntities1 dc = new CalendarDBEntities1())
             {
                 //var events = dc.Events.ToList();
                 var events = dc.GetEventsByID(cookieUserID, "CompanyCalendar").ToList();
@@ -244,8 +244,8 @@ namespace CompanyCalendar.Controllers
             e.IsRecur = vm.IsRecur;
             e.RecurEnd = vm.RecurEnd;
             e.RecurType = vm.RecurType;
-            
-            
+
+
 
             HttpCookie getCookie = Request.Cookies["LoggedIn"];
             int cookieUserID = 0;
@@ -258,7 +258,7 @@ namespace CompanyCalendar.Controllers
             var status = false;
             using (CalendarDBEntities1 dc = new CalendarDBEntities1())
             {
-                
+                Event returnE = new Event();
                 if (e.EventID > 0)
                 {
                     //Update the event
@@ -267,52 +267,131 @@ namespace CompanyCalendar.Controllers
                     {
                         if (e.IsRecur == true)
                         {
-                            DeleteEvent(e.EventID.ToString());
+                            //Delete previous Recur events
+                            Event[] getIDs = gdc.Events.Where(a => a.EventID >= e.EventID && a.RecurID == e.RecurID).ToArray();
+
+                            foreach (Event getID in getIDs)
+                            {
+                                DeleteEvent(getID.EventID.ToString());
+                            }
+
+                            //Create edit events newly
+                            returnE = NewEvent(e, true);
+
+                            int maxEventID = 0;
+                            var gID = gdc.Events.Where(a => a.CreationID == returnE.CreationID).FirstOrDefault();
+                            maxEventID = gID.EventID;
+
+                            try
+                            {
+                                if (!(vm.selectedValues.Length < 1 || vm.selectedValues == null))
+                                {
+                                    SaveMembers(vm.selectedValues, maxEventID, vm.EventType, vm.editType);
+                                }
+                            }
+                            catch
+                            {
+
+                            }
+
+                        }
+                        else
+                        {
+                            returnE = UpdateEvent(e);
+
+                            int maxEventID = 0;
+                            //var getID = gdc.Events.Where(a => a.CreationID == returnE.CreationID).FirstOrDefault();
+                            maxEventID = returnE.EventID;
+
+                            try
+                            {
+                                if (!(vm.selectedValues.Length < 1 || vm.selectedValues == null))
+                                {
+                                    SaveMembers(vm.selectedValues, maxEventID, vm.EventType, vm.editType);
+                                }
+                            }
+                            catch
+                            {
+
+                            }
                         }
                     }
                     else
                     {
-                            UpdateEvent(e);
+                        returnE = UpdateEvent(e);
+
+                        int maxEventID = 0;
+                        //var getID = gdc.Events.Where(a => a.CreationID == returnE.CreationID).FirstOrDefault();
+                        maxEventID = returnE.EventID;
+
+                        try
+                        {
+                            if (!(vm.selectedValues.Length < 1 || vm.selectedValues == null))
+                            {
+                                SaveMembers(vm.selectedValues, maxEventID, vm.EventType, vm.editType);
+                            }
+                        }
+                        catch
+                        {
+
+                        }
                     }
                 }
                 else
                 {
                     //New event insert
-                    NewEvent(e);
-                   
+                    returnE = NewEvent(e, false);
+
+                    int maxEventID = 0;
+                    var getID = gdc.Events.Where(a => a.CreationID == returnE.CreationID).FirstOrDefault();
+                    maxEventID = getID.EventID;
+
+                    try
+                    {
+                        if (!(vm.selectedValues.Length < 1 || vm.selectedValues == null))
+                        {
+                            SaveMembers(vm.selectedValues, maxEventID, vm.EventType, vm.editType);
+                        }
+                    }
+                    catch
+                    {
+
+                    }
+
                 }
 
                 status = true;
 
-                int maxEventID = 0;
+                //int maxEventID = 0;
 
-                if (vm.EventID == 0)
-                {
-                    var getID = gdc.Events.Where(a => a.CreationID == e.CreationID).FirstOrDefault();
-                    maxEventID = getID.EventID;
-                }
-                else
-                {
-                    maxEventID = vm.EventID;
-                }
 
-                try
-                {
-                    if (!(vm.selectedValues.Length < 1 || vm.selectedValues == null))
-                    {
-                        SaveMembers(vm.selectedValues, maxEventID, vm.EventType);
-                    }
-                }
-                catch
-                {
+                //if (returnE.EventID == 0)
+                //{
+                //    var getID = gdc.Events.Where(a => a.CreationID == returnE.CreationID).FirstOrDefault();
+                //    maxEventID = getID.EventID;
+                //}
+                //else
+                //{
+                //    maxEventID = vm.EventID;
+                //}
 
-                }
+                //try
+                //{
+                //    if (!(vm.selectedValues.Length < 1 || vm.selectedValues == null))
+                //    {
+                //        SaveMembers(vm.selectedValues, maxEventID, vm.EventType, vm.editType );
+                //    }
+                //}
+                //catch
+                //{
+
+                //}
 
             }
             return new JsonResult { Data = new { status = status } };
         }
 
-        void NewEvent(Event e)
+        Event NewEvent(Event e, bool isUpdate)
         {
             HttpCookie getCookie = Request.Cookies["LoggedIn"];
             int cookieUserID = 0;
@@ -326,11 +405,23 @@ namespace CompanyCalendar.Controllers
             Guid creationID = Guid.NewGuid();
             e.CreationID = creationID;
 
-            if (e.IsRecur == true)
+            if (e.IsRecur == true && isUpdate == false)
             {
                 Guid newRId = Guid.NewGuid();
                 e.RecurID = newRId;
 
+            }
+            else if (e.IsRecur == true && isUpdate == true)
+            {
+                if (e.RecurID == null)
+                {
+                    Guid newRId = Guid.NewGuid();
+                    e.RecurID = newRId;
+                }
+                else
+                {
+                    e.RecurID = e.RecurID;
+                }
             }
             else
             {
@@ -371,8 +462,10 @@ namespace CompanyCalendar.Controllers
 
             gdc.Events.Add(e);
             gdc.SaveChanges();
+
+            return e;
         }
-        void UpdateEvent(Event e)
+        Event UpdateEvent(Event e)
         {
             HttpCookie getCookie = Request.Cookies["LoggedIn"];
             int cookieUserID = 0;
@@ -433,7 +526,10 @@ namespace CompanyCalendar.Controllers
                     v.EventLocation = e.EventLocation;
                 }
                 gdc.SaveChanges();
+
+
             }
+            return v;
         }
 
         [HttpPost]
@@ -455,6 +551,28 @@ namespace CompanyCalendar.Controllers
         }
 
         [HttpPost]
+        public JsonResult RecurEventRemove(int EventID, string removeType, Guid RecurID)
+        {
+            var status = false;
+            if (removeType == "onwardRemove")
+            {
+                Event[] getIDs = gdc.Events.Where(a => a.EventID >= EventID && a.RecurID == RecurID).ToArray();
+
+                foreach (Event getID in getIDs)
+                {
+                    DeleteEvent(getID.EventID.ToString());
+                }
+            }
+            else
+            {
+                DeleteEvent(EventID.ToString());
+            }
+
+            status = true;
+            return new JsonResult { Data = new { status = status } };
+        }
+
+        [HttpPost]
         public JsonResult EditEvent(string eventID)
         {
             var parties = gdc.Participants.ToList();
@@ -469,14 +587,14 @@ namespace CompanyCalendar.Controllers
             }
             parId = parList.ToArray();
 
-            
-            
-            
+
+
+
             return new JsonResult { Data = parId };
         }
 
         [HttpPost]
-        public void SaveMembers(string[] selectedValues, int eventsId, string type)
+        public void SaveMembers(string[] selectedValues, int eventsId, string type, string editType)
         {
             try
             {
@@ -485,9 +603,19 @@ namespace CompanyCalendar.Controllers
 
                 if (isRecur)
                 {
+                    //Event [] eventList =  ;
+
+                    //if (editType== "onward")
+                    //{
+                    //    Guid recurID = eventData.RecurID.Value;
+                    //    eventList = gdc.Events.Where(e => e.RecurID == recurID).ToArray();
+                    //}
+                    //else
+                    //{
+
+                    //}
                     Guid recurID = eventData.RecurID.Value;
                     var eventList = gdc.Events.Where(e => e.RecurID == recurID).ToList();
-
 
                     foreach (var e in eventList)
                     {
