@@ -603,65 +603,118 @@ namespace CompanyCalendar.Controllers
 
                 if (isRecur)
                 {
-                    //Event [] eventList =  ;
 
-                    //if (editType== "onward")
-                    //{
-                    //    Guid recurID = eventData.RecurID.Value;
-                    //    eventList = gdc.Events.Where(e => e.RecurID == recurID).ToArray();
-                    //}
-                    //else
-                    //{
-
-                    //}
-                    Guid recurID = eventData.RecurID.Value;
-                    var eventList = gdc.Events.Where(e => e.RecurID == recurID).ToList();
-
-                    foreach (var e in eventList)
+                    if (editType == "onward")
                     {
-                        if (type == "Meeting")
-                        {
-                            if (e.EventID > 0)
-                            {
-                                var partyMembers = gdc.Participants.Where(u => u.EventID == e.EventID).ToList();
+                        Guid recurID = eventData.RecurID.Value;
+                        var eventList = gdc.Events.Where(e => e.RecurID == recurID && e.EventID >= eventsId).ToList();
 
-                                foreach (var partyMember in partyMembers)
+                        foreach (var e in eventList)
+                        {
+                            if (type == "Meeting")
+                            {
+                                if (e.EventID > 0)
                                 {
-                                    if (partyMember != null)
+                                    var partyMembers = gdc.Participants.Where(u => u.EventID == e.EventID).ToList();
+
+                                    foreach (var partyMember in partyMembers)
                                     {
-                                        gdc.Participants.Remove(partyMember);
+                                        if (partyMember != null)
+                                        {
+                                            gdc.Participants.Remove(partyMember);
+                                            gdc.SaveChanges();
+                                        }
+                                    }
+
+                                    foreach (string selectedValue in selectedValues)
+                                    {
+                                        User user = gdc.Users.Where(u => u.UserName == selectedValue).FirstOrDefault();
+
+                                        var saveMembers = new Participant();
+                                        saveMembers.EmpID = user.UserID;
+
+                                        saveMembers.EventID = Convert.ToInt32(e.EventID);
+                                        gdc.Participants.Add(saveMembers);
                                         gdc.SaveChanges();
                                     }
+
                                 }
 
-                                foreach (string selectedValue in selectedValues)
-                                {
-                                    User user = gdc.Users.Where(u => u.UserName == selectedValue).FirstOrDefault();
-
-                                    var saveMembers = new Participant();
-                                    saveMembers.EmpID = user.UserID;
-
-                                    saveMembers.EventID = Convert.ToInt32(e.EventID);
-                                    gdc.Participants.Add(saveMembers);
-                                    gdc.SaveChanges();
-                                }
 
                             }
-
-
-                        }
-                        if ((type == "Leave" || type == "Personal"))
-                        {
-                            if (eventsId > 0)
+                            if ((type == "Leave" || type == "Personal"))
                             {
-                                var partyMembers = gdc.Participants.Where(u => u.EventID == e.EventID).ToList();
-
-                                foreach (var partyMember in partyMembers)
+                                if (eventsId > 0)
                                 {
-                                    if (partyMember != null)
+                                    var partyMembers = gdc.Participants.Where(u => u.EventID == e.EventID).ToList();
+
+                                    foreach (var partyMember in partyMembers)
                                     {
-                                        gdc.Participants.Remove(partyMember);
+                                        if (partyMember != null)
+                                        {
+                                            gdc.Participants.Remove(partyMember);
+                                            gdc.SaveChanges();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+
+                    }
+                    else
+                    {
+
+
+                        Guid recurID = eventData.RecurID.Value;
+                        var eventList = gdc.Events.Where(e => e.RecurID == recurID).ToList();
+
+                        foreach (var e in eventList)
+                        {
+                            if (type == "Meeting")
+                            {
+                                if (e.EventID > 0)
+                                {
+                                    var partyMembers = gdc.Participants.Where(u => u.EventID == e.EventID).ToList();
+
+                                    foreach (var partyMember in partyMembers)
+                                    {
+                                        if (partyMember != null)
+                                        {
+                                            gdc.Participants.Remove(partyMember);
+                                            gdc.SaveChanges();
+                                        }
+                                    }
+
+                                    foreach (string selectedValue in selectedValues)
+                                    {
+                                        User user = gdc.Users.Where(u => u.UserName == selectedValue).FirstOrDefault();
+
+                                        var saveMembers = new Participant();
+                                        saveMembers.EmpID = user.UserID;
+
+                                        saveMembers.EventID = Convert.ToInt32(e.EventID);
+                                        gdc.Participants.Add(saveMembers);
                                         gdc.SaveChanges();
+                                    }
+
+                                }
+
+
+                            }
+                            if ((type == "Leave" || type == "Personal"))
+                            {
+                                if (eventsId > 0)
+                                {
+                                    var partyMembers = gdc.Participants.Where(u => u.EventID == e.EventID).ToList();
+
+                                    foreach (var partyMember in partyMembers)
+                                    {
+                                        if (partyMember != null)
+                                        {
+                                            gdc.Participants.Remove(partyMember);
+                                            gdc.SaveChanges();
+                                        }
                                     }
                                 }
                             }
