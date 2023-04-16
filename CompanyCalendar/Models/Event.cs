@@ -30,5 +30,7 @@ namespace CompanyCalendar.Models
         public Nullable<System.DateTime> CreatedOn { get; set; }
         public string EventType { get; set; }
         public string EventLocation { get; set; }
+        public string ExceptDay { get; set; }
+        public Nullable<int> Reminder { get; set; }
     }
 }

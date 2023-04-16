@@ -44,5 +44,18 @@ namespace CompanyCalendar.Models
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<events_get_events_by_loginID_prc_Result1>("GetEventsByID", loginIDParameter, eventTypeParameter);
         }
+    
+        public virtual int ReminderMail(Nullable<int> eventId, Nullable<int> type)
+        {
+            var eventIdParameter = eventId.HasValue ?
+                new ObjectParameter("EventId", eventId) :
+                new ObjectParameter("EventId", typeof(int));
+    
+            var typeParameter = type.HasValue ?
+                new ObjectParameter("Type", type) :
+                new ObjectParameter("Type", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("ReminderMail", eventIdParameter, typeParameter);
+        }
     }
 }

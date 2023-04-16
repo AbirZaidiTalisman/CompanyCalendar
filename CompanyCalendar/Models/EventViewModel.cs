@@ -25,6 +25,8 @@ namespace CompanyCalendar.Models
         public string EventLocation { get; set; }
         public string [] selectedValues { get; set; }
         public string editType { get; set; }
+        public string ExceptDay { get; set; }
+        public int Reminder { get; set; }
 
     }
 }

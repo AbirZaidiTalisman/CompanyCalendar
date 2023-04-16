@@ -36,5 +36,7 @@ namespace CompanyCalendar.Models
         public Nullable<bool> IsRecur { get; set; }
         public Nullable<System.DateTime> RecurEnd { get; set; }
         public string RecurType { get; set; }
+        public string ExceptDay { get; set; }
+        public Nullable<int> Reminder { get; set; }
     }
 }

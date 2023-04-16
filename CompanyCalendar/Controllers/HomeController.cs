@@ -244,6 +244,8 @@ namespace CompanyCalendar.Controllers
             e.IsRecur = vm.IsRecur;
             e.RecurEnd = vm.RecurEnd;
             e.RecurType = vm.RecurType;
+            e.ExceptDay = vm.ExceptDay;
+            e.Reminder = vm.Reminder;
 
 
 
@@ -352,14 +354,18 @@ namespace CompanyCalendar.Controllers
                         {
                             SaveMembers(vm.selectedValues, maxEventID, vm.EventType, vm.editType);
                         }
+
+                        gdc.ReminderMail(maxEventID, 1);
                     }
                     catch
                     {
 
                     }
 
+
                 }
 
+                
                 status = true;
 
                 //int maxEventID = 0;
@@ -463,6 +469,8 @@ namespace CompanyCalendar.Controllers
             gdc.Events.Add(e);
             gdc.SaveChanges();
 
+            
+
             return e;
         }
         Event UpdateEvent(Event e)
@@ -491,6 +499,7 @@ namespace CompanyCalendar.Controllers
                 v.End = e.End;
                 v.Description = e.Description;
                 v.IsFullDay = e.IsFullDay;
+                v.Reminder = e.Reminder;
 
                 if (e.EventType == "Leave")
                 {

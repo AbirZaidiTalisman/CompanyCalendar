@@ -25,6 +25,8 @@
           <Property Name="CreatedOn" Type="datetime" />
           <Property Name="EventType" Type="nvarchar" MaxLength="500" />
           <Property Name="EventLocation" Type="nvarchar" MaxLength="500" />
+          <Property Name="ExceptDay" Type="nvarchar" MaxLength="500" />
+          <Property Name="Reminder" Type="int" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'CalendarDB.dbo.GetEventsTemp' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -78,6 +80,11 @@ warning 6002: The table/view 'CalendarDB.dbo.GetEventsTemp' does not have a prim
           <Parameter Name="loginID" Type="int" Mode="In" />
           <Parameter Name="EventType" Type="varchar" Mode="In" />
         </Function>
+        <Function Name="ReminderMail_Job_Proc" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="ReminderMail_proc" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="EventId" Type="int" Mode="In" />
+          <Parameter Name="Type" Type="int" Mode="In" />
+        </Function>
         <EntityContainer Name="CalendarDBModelStoreContainer">
           <EntitySet Name="Events" EntityType="Self.Events" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Participants" EntityType="Self.Participants" Schema="dbo" store:Type="Tables" />
@@ -118,6 +125,10 @@ warning 6002: The table/view 'CalendarDB.dbo.GetEventsTemp' does not have a prim
           <EntitySet Name="Participants" EntityType="CalendarDBModel.Participant" />
           <EntitySet Name="Users" EntityType="CalendarDBModel.User" />
           <EntitySet Name="GetEventsTemps" EntityType="CalendarDBModel.GetEventsTemp" />
+          <FunctionImport Name="ReminderMail">
+            <Parameter Name="EventId" Mode="In" Type="Int32" />
+            <Parameter Name="Type" Mode="In" Type="Int32" />
+          </FunctionImport>
           </EntityContainer>
         <ComplexType Name="events_get_events_by_loginID_prc_Result">
           <Property Type="Int32" Name="EventID" Nullable="false" />
@@ -160,6 +171,8 @@ warning 6002: The table/view 'CalendarDB.dbo.GetEventsTemp' does not have a prim
           <Property Type="Boolean" Name="IsRecur" Nullable="true" />
           <Property Type="DateTime" Name="RecurEnd" Nullable="true" Precision="23" />
           <Property Type="String" Name="RecurType" Nullable="true" MaxLength="500" />
+          <Property Type="String" Name="ExceptDay" Nullable="false" MaxLength="500" />
+          <Property Type="Int32" Name="Reminder" Nullable="true" />
           </ComplexType>
         <EntityType Name="Event">
           <Key>
@@ -181,6 +194,8 @@ warning 6002: The table/view 'CalendarDB.dbo.GetEventsTemp' does not have a prim
           <Property Name="CreatedOn" Type="DateTime" Precision="3" />
           <Property Name="EventType" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="EventLocation" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="ExceptDay" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Reminder" Type="Int32" />
         </EntityType>
         <EntityType Name="Participant">
           <Key>
@@ -260,12 +275,16 @@ warning 6002: The table/view 'CalendarDB.dbo.GetEventsTemp' does not have a prim
                 <ScalarProperty Name="IsRecur" ColumnName="IsRecur" />
                 <ScalarProperty Name="RecurEnd" ColumnName="RecurEnd" />
                 <ScalarProperty Name="RecurType" ColumnName="RecurType" />
+                <ScalarProperty Name="ExceptDay" ColumnName="ExceptDay" />
+                <ScalarProperty Name="Reminder" ColumnName="Reminder" />
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
           <EntitySetMapping Name="Events">
             <EntityTypeMapping TypeName="CalendarDBModel.Event">
               <MappingFragment StoreEntitySet="Events">
+                <ScalarProperty Name="Reminder" ColumnName="Reminder" />
+                <ScalarProperty Name="ExceptDay" ColumnName="ExceptDay" />
                 <ScalarProperty Name="EventLocation" ColumnName="EventLocation" />
                 <ScalarProperty Name="EventType" ColumnName="EventType" />
                 <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
@@ -332,6 +351,7 @@ warning 6002: The table/view 'CalendarDB.dbo.GetEventsTemp' does not have a prim
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="ReminderMail" FunctionName="CalendarDBModel.Store.ReminderMail_proc" />
           </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
